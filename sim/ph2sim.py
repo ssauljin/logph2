@@ -67,6 +67,12 @@ def r_gpd(n, rng, xi=0.5, sigma=1.0):
     return sigma / xi * (u ** (-xi) - 1)
 
 
+def r_gpd_loc5(n, rng, xi=0.5, sigma=1.0, mu=5.0):
+    # GPD with location 5 (as in JBF Fig. 3): alpha = 2, rho = -1; support starts at 5,
+    # the case the JBF min-shift log(Y - min Y) is designed for
+    return mu + r_gpd(n, rng, xi, sigma)
+
+
 def r_frechet(n, rng, a=2.0):
     # Frechet: alpha = 2, rho = -2
     u = rng.random(n)
@@ -87,6 +93,8 @@ def true_quantile(name, p):
         return np.exp(stats.gamma.isf(q, 1.5, scale=1 / 2.0))
     if name == "Burr":
         return (q ** (-1 / 4.0) - 1) ** (1 / 0.5)
+    if name == "GPD-loc5":
+        return 5 + 1 / 0.5 * (q ** (-0.5) - 1)
     if name == "GPD":
         return 1 / 0.5 * (q ** (-0.5) - 1)
     if name == "Frechet":
@@ -101,6 +109,7 @@ DISTS = {
     "Burr": (r_burr, -0.5, False),
     "Two-Pareto": (r_two_pareto, -0.5, True),
     "GPD": (r_gpd, -1.0, False),
+    "GPD-loc5": (r_gpd_loc5, -1.0, False),
     "Frechet": (r_frechet, -2.0, False),
 }
 
@@ -245,24 +254,33 @@ def ph2_quantile(sf, qq):
 # --------------------------------------------------------------------------------------
 
 
+def _log_scale_fits(x, u, qq, scale):
+    """Hill + both PH2 sub-families on log-excess x; quantiles mapped back by `scale`."""
+    aH = 1 / x.mean()
+    qH = scale(qq ** (-1 / aH))
+    f = fit_ph2_both(x)
+    aA, rA, nA, sA = f["A"]
+    aB, _, nB, sB = f["B"]
+    qA = scale(np.exp(ph2_quantile(sA, qq)))
+    qB = scale(np.exp(ph2_quantile(sB, qq)))
+    return aH, qH, aA, qA, rA, nA, aB, qB, nB
+
+
 def one_rep(args):
+    """Unshifted log(Y/u) fits and JBF min-shifted log((Y-m)/(u-m)) fits, m = min(Y).
+    GPD on Y - u is shift-invariant, so it is fitted once."""
     name, seed, n, kgrid, p = args
     rng = np.random.default_rng(seed)
     y = np.sort(DISTS[name][0](n, rng))
+    m = y[0]
     out = []
     for k in kgrid:
         u = y[n - k - 1]
         ex = y[n - k:]
-        x = np.log(ex / u)
         qq = n * (1 - p) / k  # exceedance-survival level for target quantile
-        aH = 1 / x.mean()
-        qH = u * qq ** (-1 / aH)
         aG, xiG, qfG = fit_gpd(ex - u)
         qG = u + qfG(qq)
-        f = fit_ph2_both(x)
-        aA, rA, nA, sA = f["A"]
-        aB, _, nB, sB = f["B"]
-        qA = u * np.exp(ph2_quantile(sA, qq))
-        qB = u * np.exp(ph2_quantile(sB, qq))
-        out.append((name, seed, k, aH, qH, aG, qG, aA, qA, rA, nA, aB, qB, nB))
+        raw = _log_scale_fits(np.log(ex / u), u, qq, lambda r: u * r)
+        sh = _log_scale_fits(np.log((ex - m) / (u - m)), u, qq, lambda r: m + (u - m) * r)
+        out.append((name, seed, k, aG, qG) + raw + sh)
     return out
