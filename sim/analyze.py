@@ -7,7 +7,8 @@ P = 0.9995
 XI = 1 / ALPHA
 CLIP = 3.0     # cap |log(Qhat/Q)|; share of capped values is reported
 XICAP = 5.0    # cap xi-hat (alpha-hat -> 0 explosions)
-df = pd.read_csv("mc_results.csv")
+import os
+df = pd.read_csv("mc_results.csv" if os.path.exists("mc_results.csv") else "mc_results.csv.gz")
 df["qt"] = df["dist"].map({d: true_quantile(d, P) for d in DISTS})
 
 # ---- PH2 variants built from the two stored sub-family fits -------------------------
@@ -60,8 +61,9 @@ title = {d: f"{d}  (ρ = {DISTS[d][1]:g}{', in PH$_2$ class' if DISTS[d][2] else
 
 # ---- figures: Hill vs GPD vs PH2-AIC (validated 3-colour palette + dash/marker) ------
 PLOT = {"Hill": ("#2a78d6", "--", "s"), "GPD": ("#eb6834", "-.", "^"),
-        "PH2-AIC": ("#1baf7a", "-", "o")}
-LABEL = {"Hill": "Hill", "GPD": "GPD", "PH2-AIC": "PH$_2$ (AIC)"}
+        "PH2-B only": ("#1baf7a", "-", "o"), "PH2-AIC": ("#6250d6", ":", "D")}
+LABEL = {"Hill": "Hill", "GPD": "GPD", "PH2-B only": "PH$_2$ Exp+Erlang ($\\rho=0$ sub-model)",
+         "PH2-AIC": "PH$_2$ AIC-selected"}
 
 
 def panel(metric, ylabel, fname, ref=None, ylim=None):
@@ -82,8 +84,9 @@ def panel(metric, ylabel, fname, ref=None, ylim=None):
         ax.set_xlabel("k = number of exceedances (n = 2000)")
     for ax in axs[:, 0]:
         ax.set_ylabel(ylabel)
-    axs[0, 0].legend(frameon=False)
-    fig.tight_layout(); fig.savefig(fname, dpi=150); plt.close(fig)
+    h, l = axs[0, 0].get_legend_handles_labels()
+    fig.legend(h, l, loc="upper center", ncol=4, frameon=False, fontsize=10)
+    fig.tight_layout(rect=(0, 0, 1, 0.95)); fig.savefig(fname, dpi=150); plt.close(fig)
 
 
 panel("rmse_xi", "RMSE of $\\hat\\xi = 1/\\hat\\alpha$", "fig_rmse_xi.png", ylim=(0, 0.6))

@@ -15,3 +15,4 @@ pip install numpy scipy pandas matplotlib
 python3 run_mc.py 500
 python3 analyze.py
 ```
+* `RESULTS.md` – summary of the n = 2000, R = 500 run and suggested framing.
