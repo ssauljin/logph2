@@ -1,0 +1,451 @@
+\documentclass[11pt]{article} 
+%generated from JKim macro in TeXShop: Macros>Headings>JKim article template; also see my figure template
+\usepackage{amsmath}
+\usepackage{natbib} 
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\geometry{letterpaper} % or letter or a5paper or ... etc
+% \geometry{landscape} % rotated page geometry
+\bibpunct{(}{)}{;}{a}{,}{,}
+%\setlength{\textwidth}{16cm}
+%\setlength{\textheight}{21cm}
+%\newcounter{parnum}
+%\newcommand{\N}{%
+%  \noindent\refstepcounter{parnum}%
+%   \makebox[\parindent][l]{\textbf{[\arabic{parnum}]}}\quad  }
+\usepackage{color}
+\newcommand{\cred}{ \color{red}}
+\newcommand{\cgreen}{\color{green}}
+\newcommand{\cblue}{\color{blue}}
+\newcommand{\cmag}{\color{magenta}}
+\newcommand{\bn}{\begin{enumerate}}
+\newcommand{\en}{\end{enumerate}}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\be}{\begin{eqnarray}}
+\newcommand{\ee}{\end{eqnarray}}
+\newcommand{\by}{\begin{eqnarray*}}
+\newcommand{\ey}{\end{eqnarray*}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+
+%\linespread{1.8}
+% See the ``Article customise'' template for come common customisations
+
+ \title{}
+\author{Joseph H. T. Kim\footnote{Dept. Applied Statistics, College of Business and Economics, Yonsei University, Seoul, Korea, 120-749 (Email: jhtkim@yonsei.ac.kr.) }\quad  }
+%\date{July, 2011} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+\maketitle
+%\tableofcontents
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{exam}[thm]{Example}
+
+%================================
+\section*{Abstract}
+%================================
+\begin{enumerate}
+\item Construct the confidence interval for $\theta_T$
+\item Identify the second-order behavior of PH2 distribution: p.341 of \cite{embr+klup+milk:97} also see\\
+\verb"http://freakonometrics.hypotheses.org/12226"
+\item Estimate quantiles or CTE using (4) of \cite{McNei+Salad:97a} and compare with GPD alternative.
+\item See \cite{Drees+De-Ha+etal:00a} p. 259 for Loggamma's second order asymptotic which is relevant to the PH2 case. 
+\item For some examples with known second parameter see following article:\\
+Weighted moment estimators for the second order scale parameter by Tertius de Wet et al.\\
+Especially for GPD, see:\\
+Estimation of the third order parameter in extreme value statistics by Yuri Goegebeur and Tertius de Wet
+\end{enumerate}
+
+\newpage
+%================================
+\section{Background}
+%================================
+
+Note (Dec. 2025):
+\begin{itemize}
+  \item I wrote this draft about 10 years ago, so I do not remember the detailed goals.
+  \item The draft starts from the next section.
+\end{itemize}
+Background:
+\begin{itemize}
+  \item For a given heavy-tailed (Pareto, GPD) dataset, it is of interest to estimate its tail index in many applications.
+  \item The standard practice is to fit a GPD to the tail area of the data, or exceedances. But the optimal threshold is hard to find and the resulting tail index greatly depends on the threshold choice. 
+  \item Thus it makes sense to use some parametric distribution that can estimate the tail index in a robust way. See \cite{Ahn+Kim+etal:12a} and \cite{Kim+Kim:15a} to understand this point. These methods log transform the original data and fit to a class of exponential-decaying distributions, called phase-type distribution.
+  \item The idea for the new paper is to find the second order parameter of the tail index for a given heavy tailed dataset.
+  \item In the literature, the second order parameter has been of interest for theoretical developments, but actual estimation process for real data has been rarely attempted.
+  \item If successful, therefore, we have a new contribution to the EVT literature.
+\end{itemize}
+%================================
+\section{Introduction}
+%================================
+This article establishes the confidence interval of the tail index $\theta_T$ from the $PH_2(\alpha, T)$ distribution class.
+
+literature review: \\
+
+According to \cite{Dicks+Hipp:00a}, the $PH_2(\alpha, T)$ is either a linear combination of two exponential densities, or a linear combination of an exponential and an Erlang density with the same scale parameter, where the shape parameter of the Erlang is 2. The first case has 3 parameters and the second 2, which corresponding to the 5 parameter s of $PH_2(\alpha, T)$. \\
+
+If we rewrite $T$ as
+\begin{equation}
+\label{mtx.T}
+T=\begin{pmatrix}
+  -\lambda    & \beta \lambda   \\
+     \gamma \mu & -\mu 
+\end{pmatrix}
+\end{equation} where $\lambda, \mu>0$ and $0 \le \beta  \le 1, \, 0\le \gamma \le 1$ with $\beta \gamma \ne 1$. From this representation the eigenvalues of $T$  can be obtained using the characteristic polynomial:
+\begin{equation}
+\label{ }
+|\psi I-T|=\det \begin{pmatrix}
+ \psi +\lambda    & -\beta \lambda   \\
+     -\gamma \mu & \psi+\mu 
+\end{pmatrix}= \psi^2+(\lambda+\mu)\psi+\lambda \mu (1-\beta \gamma)
+\end{equation}
+Thus the eigenvalues can be found by using the quadratic formula
+\begin{equation}
+\label{eigen.val.form}
+\psi=\frac{-(\lambda+\mu)\pm \sqrt{(\lambda-\mu)^2+4\beta  \gamma \lambda \mu}}{2}.
+\end{equation}
+Since the quantity inside the square root is non negative, there is at least one real eigenvalue. As we obtain different distributions depending on the number of distinct eigenvalues, we consider two cases based on the Jordan decomposition of a matrix to derive relevant quantities
+\subsection{When there is only one eigenvalue}
+This case arises when $(\lambda-\mu)^2+4\beta \gamma \lambda \mu =0$ in (\ref{eigen.val.form}). An equivalent condition is $\lambda=\mu$ and $\beta \gamma =0$, from which the only eigenvalue is given by $\psi=-\mu$ and matrix $T$ in (\ref{mtx.T}) becomes
+\begin{equation}
+\label{T.two.vers}
+T=\begin{pmatrix}
+  -\mu    & \beta \mu   \\
+     0 & -\mu
+\end{pmatrix}, \quad or \quad T=\begin{pmatrix}
+  -\mu    & 0   \\
+     \gamma \mu & -\mu 
+\end{pmatrix}
+\end{equation} 
+We focus on the first type only for now. The second type will be handled later separately; this is needed as the calibrated parameters from the EMPHT can be either of these cases depending on real applications. Using the Jordan decomposition for a 2 by 2 matrix (need to add this; google eigenvalues for 2 by 2 matrix), we need to find a suitable $H$ satisfying
+\begin{equation}
+\label{ }
+T=H\Lambda H^{-1}=H\begin{pmatrix}
+  \psi    & 1   \\
+     0 & \psi 
+\end{pmatrix} H^{-1}=H\begin{pmatrix}
+  -\mu    & 1   \\
+     0 & -\mu
+\end{pmatrix} H^{-1}
+\end{equation}
+Solving this gives 
+\begin{equation}
+\label{ }H=
+\begin{pmatrix}
+    \beta \mu  & b   \\
+     0 & 1 
+\end{pmatrix}, \quad  b \in \mathbf{ R}
+\end{equation}
+Then the distribution function of $PH_2(\alpha, T)$ can be explicitly written as
+\begin{align}
+\label{}
+F(x)&=1-\pi e^{Tx}\mathbf{ 1}=  1-\pi \exp \big{(}H(\Lambda x)H^{-1}\big{)}\mathbf{ 1} \\
+    & = 1-\pi H \exp (\Lambda x) H^{-1} \mathbf{ 1}
+\end{align}
+If we plug in matrices $H$ and $\Lambda$, after some algebra, we arrive at
+\begin{align} 
+\nonumber    F(x)&=1-\pi_1(\beta\mu xe^{-\mu x}+e^{-\mu x})-\pi_2(e^{-\mu x})   \\
+\label{F.case1}    &  =1-\pi_1\beta (\mu xe^{-\mu x}+e^{-\mu x})-(1-\pi_1 \beta)e^{-\mu x}
+\end{align}
+with the density
+\begin{align}
+\nonumber f(x)&=\pi_1(-\beta\mu e^{-\mu x}+\beta\mu^2 x e^{-\mu x} +\mu e^{-\mu x})+\pi_2(\mu e^{-\mu x})     \\
+\label{f.case1}    & =\pi_1\beta \cdot \mu^2 x e^{-\mu x} +(1-\pi_1 \beta)\cdot \mu e^{-\mu x}, \quad 0\le \beta \le 1,
+\end{align}
+ a linear combination of an exponential and an Erlang density with the same scale parameter.  Thus we have confirmed the result of \cite{Dicks+Hipp:00a} by finding a further explicit expression. Interestingly, the final mixture weight depends not only on the initial probability vector, but on a transition intensity parameter $\beta$ as well. \\ 
+
+{\cred SAVE THIS FOR LATER
+Similarly for the second case in (\ref{T.two.vers}), 
+\begin{equation}
+\label{ }H=
+\begin{pmatrix}
+    0 & 1   \\
+     \gamma \mu & d 
+\end{pmatrix}, \quad  d \in \mathbf{ R}
+\end{equation}
+}
+%
+%First, note that the $k$th moment of the density (\ref{f.case1}) is given by
+%\begin{equation}
+%\label{kth.mom.case1}
+%E(X^k)=\pi_1\beta \mu^{-k}\Gamma(k+2)+(1-\pi_1\beta)\mu^{-k}\Gamma(k+1), \quad k>-1,
+%\end{equation} from the standard result of the gamma distribution.
+From the density given in (\ref{f.case1}), one can obtain the log likelihood function
+%\begin{equation}
+%\label{ }
+%l=\sum^n_{i=1}\log f(X_i)=\sum^n_{i=1}\log (\pi_1\beta \cdot \mu^2 x e^{-\mu x} +(1-\pi_1 \beta)\cdot \mu e^{-\mu x})
+%\end{equation} 
+\begin{align}
+\label{}
+   l&=\sum^n_{i=1}\log f(X_i)=\sum^n_{i=1}\log (\pi_1\beta \cdot \mu^2 X_i e^{-\mu X_i} +(1-\pi_1 \beta)\cdot \mu e^{-\mu X_i})  \\
+   &=\sum^n_{i=1}\Bigg{[} \log \mu -\mu X_i+\log (1-\pi_1 \beta+\pi_1 \beta \mu X_i)  \Bigg{]} 
+\end{align}
+The first and second partial derivatives are respectively
+\begin{align}
+\label{}
+    \frac{\partial l}{\partial \mu}&=  \sum^n_{i=1}\Bigg{[} \frac{1}{\mu}-X_i+\frac{\pi_1 \beta X_i}{1-\pi_1 \beta+\pi_1 \beta \mu X_i}\Bigg{]}\\
+    & = \frac{n}{\mu}-\bar{X}+\sum^n_{i=1} \frac{\pi_1 \beta X_i}{1-\pi_1 \beta+\pi_1 \beta \mu X_i}
+\end{align}
+and
+\begin{align}
+\label{}
+    \frac{\partial l^2}{\partial \mu^2}&=   -\frac{n}{\mu^2}+\sum^n_{i=1} \Bigg{(}\frac{\pi_1 \beta X_i}{1-\pi_1 \beta+\pi_1 \beta \mu X_i}\Bigg{)}^2 \\
+%    & =\mu ...
+\end{align}
+
+The expected value of the second derivative under density (\ref{f.case1}) is available using the inverse gamma and exponential distribution.
+\begin{align}
+\label{}
+    E\Bigg{(}\frac{\partial l^2}{\partial \mu^2} \Bigg{)}&=   -\frac{n}{\mu^2}+E \Bigg{[}\sum^n_{i=1} \Bigg{(}\frac{\pi_1 \beta X_i}{1-\pi_1 \beta+\pi_1 \beta \mu X_i}\Bigg{)}^2 \, \Bigg{]}\\
+%    & =    -\frac{n}{\mu^2}+\sum^n_{i=1}\sum^{\infty}_{k=2} (-1)^k (k-1)\Big{(}\frac{\pi_1\beta}{1-\pi_1\beta}\Big{)}^k E(X_i^k) \\
+%    & =    -\frac{n}{\mu^2}+n\sum^{\infty}_{k=2} (-1)^k (k-1)\Big{(}\frac{\pi_1\beta}{1-\pi_1\beta}\Big{)}^k E(X^k) 
+\end{align}
+
+{\cred [NOTE: can you try this expected value under density (\ref{f.case1})  using mu pad?]}\\
+
+%\begin{align}
+%\label{}
+%E \Bigg{[}\Bigg{(}\frac{\pi_1 \beta X_i}{1-\pi_1 \beta+\pi_1 \beta \mu X_i}\Bigg{)}^2 \Bigg{]}  &= \sum^{\infty}_{k=2} (-1)^k \Big{(}\frac{\pi_i\beta}{1-\pi_i\beta}\Big{)}^k E(X_i^k) \\
+%    &   \\
+%    &  
+%\end{align}
+%Therefore,
+%where the $k$th moment of $X$ can be plugged in from (\ref{kth.mom.case1}).\\
+
+The limiting variance of $\hat{\mu}$ is then
+\begin{equation}
+\label{ }
+   \widehat{Var}(\mu)= \Bigg{(}-{\widehat{E}}\Bigg{(}\frac{\partial l^2}{\partial \mu^2} \Bigg{)} \Bigg{)}^{-1}=%n^{-1} \Bigg{[} \frac{1}{\mu^2}-\sum^{\infty}_{k=2} (-1)^k (k-1)\Big{(}\frac{\pi_1\beta}{1-\pi_1\beta}\Big{)}^k E(X^k) \Bigg{]}
+\end{equation} with all parameters on the right side being the estimated ones. Finally the $1-p$ confidence interval is $\hat{\mu} \pm z_{1-p/2}\sqrt{\widehat{Var}(\mu)}.$
+
+%=================
+\subsection{When there are two distinct eigenvalues}
+If $(\lambda-\mu)^2+4\beta \gamma \lambda \mu  \ne 0$ in (\ref{eigen.val.form}), there will be two distinct eigenvalues. Equivalently, $\lambda \ne \mu$ or $\beta \gamma \ne 0$. We denote these eigenvalues $-\theta$ and $-( \theta+\tau)$, respectively, where $\theta >0$ and $ \tau >0$. As both eigenvalues are negative $\theta$ is the eigenvalue closer to 0. Hence we see that \begin{equation}
+\label{ }
+(-\theta, -(\theta+\tau))=\Big{(} \frac{-(\lambda+\mu) +\sqrt{(\lambda-\mu)^2+4\beta \gamma\lambda \mu}}{2}, \,\, \frac{-(\lambda+\mu) -\sqrt{(\lambda-\mu)^2+4\beta \gamma\lambda \mu}}{2}\,\, \Big{)}
+\end{equation}
+is the tail index driving the tail decay.\\
+
+In this case the Jordan decomposition requires us find  $H$ such that
+\begin{equation}
+\label{ }
+T=H\Lambda H^{-1}=H\begin{pmatrix}
+  -\theta-\tau    & 0   \\
+     0 & -\theta 
+\end{pmatrix} H^{-1}
+\end{equation}
+Solving this gives
+\begin{equation}
+\label{ }
+H=\begin{pmatrix}\displaystyle 
+     \frac{-\lambda+\mu+\sqrt{(\lambda-\mu)^2+4\beta \gamma\lambda \mu}}{2 \gamma \mu} & \displaystyle    \frac{-\lambda+\mu-\sqrt{(\lambda-\mu)^2+4\beta \gamma\lambda \mu } \,}{2\gamma \mu} \\ 
+& \\     1 & 1 
+\end{pmatrix}
+\end{equation}
+and
+\begin{equation}
+\label{ }
+H^{-1}=\begin{pmatrix}\displaystyle 
+     -\frac{\gamma \mu}{\sqrt{(\lambda-\mu)^2+4\beta \gamma\lambda \mu}} & \displaystyle    \frac{-\lambda+\mu }{2 \sqrt{(\lambda-\mu)^2+4\beta \gamma\lambda \mu}}+\frac{1}{2} \\ 
+& \\    
+ \displaystyle  \frac{\gamma \mu}{\sqrt{(\lambda-\mu)^2+4\beta \gamma\lambda \mu}}  &  \displaystyle \frac{\lambda-\mu }{2 \sqrt{(\lambda-\mu)^2+4\beta \gamma\lambda \mu}}+\frac{1}{2}
+\end{pmatrix}
+\end{equation}
+
+Then the distribution function of $PH_2(\alpha, T)$ can be explicitly written as
+\begin{align}
+\label{}
+F(x)&=1-\pi e^{Tx}\mathbf{ 1}=  1-\pi \exp \big{(}H(\Lambda x)H^{-1}\big{)}\mathbf{ 1} \\
+    & = 1-\pi H \exp (\Lambda x) H^{-1} \mathbf{ 1}
+\end{align}
+If we plug in matrices $H$ and $\Lambda$, after some algebra, we arrive at\\
+\begin{align}
+\label{}
+    f(x)&=  \Bigg{(}\frac{1}{2}+\frac{(1-\pi)(\lambda-\mu+2\gamma \mu)+\pi(-\lambda+\mu +2\beta \lambda)}{\sqrt{(\lambda-\mu)^2+4\beta \gamma\lambda \mu}}\Bigg{)} \theta e^{-\theta x}\\
+    &  \quad +\Bigg{(}\frac{1}{2}-\frac{(1-\pi)(\lambda-\mu+2\gamma \mu)+\pi(-\lambda+\mu +2\beta \lambda)}{\sqrt{(\lambda-\mu)^2+4\beta \gamma\lambda \mu}}\Bigg{)} (\theta+\tau) e^{-(\theta+\tau) x}, 
+\end{align} a weighted average of two different exponential distributions, again confirming the previous result. As the $PH_2(\pi, T)$ covers the all two-point exponential mixtures with different scale parameters, we may reparametrize and simply write the density as
+\begin{equation}
+\label{f.case3}
+f(x)=(1-w)\theta e^{-\theta x}+w(\theta+\tau) e^{-(\theta+\tau) x}
+\end{equation} with three distinct parameters $(\theta, \tau, w)$.\\
+{\cred The following part in RED should be completely rewritten based on your Mathematica output:\\
+
+To derive the confidence interval, let us invoke the log likelihood function
+\begin{align}
+\label{}
+   l&=\sum^n_{i=1}\log f(X_i)=\sum^n_{i=1}\log ((1-w)\theta_2 e^{\theta_2 X_i}+w\theta_1 e^{\theta_1 X_i})  \\
+   &=\sum^n_{i=1}\Bigg{[} \log  e^{\theta_2 x}+\log \Bigg{(}(1-w)\theta_2+w \theta_1 e^{(\theta_1-\theta_2)X_i}\Bigg{)}  \Bigg{]} \\
+      &=\sum^n_{i=1}\Bigg{[} \theta_2 X_i+\log \Bigg{(}(1-w)\theta_2+w \theta_1 e^{(\theta_1-\theta_2)X_i}\Bigg{)}  \Bigg{]} 
+\end{align}
+The first and second derivatives w.r.t. $\theta_2$ are respectively
+\begin{align}
+\label{}
+\frac{\partial l}{\partial \theta_2}    &=\sum^n_{i=1}\Bigg{[} X_i + \frac{(1-w)-w \theta_1 e^{(\theta_1-\theta_2)X_i}X_i}{(1-w)\theta_2+w \theta_1 e^{(\theta_1-\theta_2)X_i}}  \Bigg{]}  \\  
+\end{align}
+and
+\begin{align}
+\label{}
+\frac{\partial^2 l}{\partial \theta_2^2}    &=\sum^n_{i=1}\frac{w \theta_1 e^{(\theta_1-\theta_2)X_i}X^2_i}{(1-w)\theta_2+w \theta_1 e^{(\theta_1-\theta_2)X_i} } -\sum^n_{i=1}\Bigg{[} \frac{(1-w)-w \theta_1 e^{(\theta_1-\theta_2)X_i}X_i}{(1-w)\theta_2+w \theta_1 e^{(\theta_1-\theta_2)X_i} }\Bigg{]}^2  \\  
+\end{align}
+Hence, the expected values of the second derivative is
+\begin{align}
+\label{}
+    E\Bigg{(} \frac{\partial^2 l}{\partial \theta_2^2}    \Bigg{)}    &=  n E \Bigg{(}\frac{w \theta_1 e^{(\theta_1-\theta_2)X}X^2}{(1-w)\theta_2+w \theta_1 e^{(\theta_1-\theta_2)X} }\Bigg{)} -nE \Bigg{(}\Bigg{[} \frac{(1-w)-w \theta_1 e^{(\theta_1-\theta_2)X}X}{(1-w)\theta_2+w \theta_1 e^{(\theta_1-\theta_2)X} }\Bigg{]}^2\Bigg{)}   
+\end{align}
+The two expected values on the right side under density (\ref{f.case3}) can be obtained using the generalized hypergeometric functions. \\
+
+}%However, due tots complicated expression, the log likelihood function we can show that this cannot cover the whole possible weights. For example, if $\beta >\frac{1}{2} (1-\mu/\lambda)$, the weight cannot be 0.5.\\
+%
+%%
+%%Need a reparametrization for our purpose:
+%%\begin{equation}
+%%\label{ }
+%%a=\frac{\lambda-\mu}{2}; \quad b=\beta \lambda; \quad c=\gamma \mu; \quad d=\frac{\lambda+\mu}{2}
+%%\end{equation}
+%%which leads to 
+%%\begin{align}
+%%\label{}
+%%   \theta_1 &=-d-\sqrt{a^2+bc}   \\
+%%   \theta_2 &=-d+\sqrt{a^2+bc}\\
+%%w&=\frac{1}{2}+\frac{(1-\pi)(a+c)+\pi(-a+b)}{\sqrt{a^2+bc}}
+%%\end{align} where $w$ is the weight for the first term of the density. 
+%%Then we rewrite this density  as
+%%
+%% or
+%%\begin{equation}
+%%\label{f.case3}
+%%f(x)=w(-d+\sqrt{a^2+bc}) e^{(-d+\sqrt{a^2+bc}) x}+(1-w)(-d-\sqrt{a^2+bc}) e^{(-d-\sqrt{a^2+bc}) x}
+%%\end{equation} 
+%
+%
+%As our parameter of interest is $\eta_T$, the second eigenvalue with the sign changed, we set
+%\begin{equation}
+%\label{ }
+%g=\eta_T=d-\sqrt{a^2+bc}
+%\end{equation}
+%and the first derivatives are
+%\begin{align}
+%\label{}
+%\frac{\partial g}{\partial a}    &=-a (a^2+bc)^{-1/2}   \\
+%\frac{\partial g}{\partial b}    &=-1/2 \cdot{} c(a^2+bc)^{-1/2}   \\
+%\frac{\partial g}{\partial c}    &=-1/2  \cdot{} b (a^2+bc)^{-1/2}   \\
+%\frac{\partial g}{\partial d}    &=1  
+%\end{align}
+%Clearly this setup uniquely determines the matrix $T$:
+
+
+
+%================================
+\section{Flexibility of PH$_2$ in tail}
+%================================
+In tail fitting based on any parametric distribution it is desired that the given model represents the tail behavior of the dataset well. The strength of the PH$_2$ lies in its flexibility as it contains both a weighted average of either a linear combination of two exponentials and a linear combination of an exponential and an Erlang(2) with the same scale parameter. In fact, yielding two different distribution types not only provides a flexibility in shape but the tail behavior presented by the so called the second order parameter as well. In this section we discuss how the LogPH$_2$ can accommodate different tail behaviors in terms of the second order parameter that drives the rate of convergence, depending on the number of eigenvalues. In particular, we show that the $LogPH_2(\pi, T)$ satisfies the second order regular varying tail and covers all the possible second order parameter values of the tail behavior. \\
+
+The tail is called second order regularly varying with the first order parameter or the tail index $\alpha$ and second order parameter $\rho$ if there exists a measurable function $a(t) \rightarrow 0$, as $t \rightarrow \infty$, which ultimately has constant sign such that the following holds:
+\begin{equation}
+\label{2nd.order.cond}
+\lim_{t \rightarrow \infty}\frac{\frac{1-F(tx)}{1-F(t)}-x^{-\alpha}}{a(t)}=\begin{cases}
+    x^{\alpha} \log x  & \text{if } \rho=0, \\
+    x^{\alpha}\frac{x^\rho-1}{\rho}  & \text{if } \rho<0.
+\end{cases}
+\end{equation}
+[copy p.1--2 of \cite{Geluk+De-Ha+etal:97a}, and study more to beef up this section]
+
+To start the discussion we first note that the survival function of the $LogPH_2(\pi, T)$ class can take only either 
+\begin{equation}
+\label{ }
+1-F(x)=\pi_1\beta (\mu x^{-\mu}\log x \, +x^{-\mu })+(1-\pi_1 \beta)x^{-\mu }
+\end{equation}
+$$
+f(x)=w  ( \mu^2 x^{-\mu-1}\log x \, +\mu x^{-\mu -1})+\mu x^{-\mu -1}
+$$
+when there is only one eigenvalue, or
+\begin{equation}
+\label{F.case3}
+1-F(x)=wx^{-(\theta+\tau)}+(1-w)x^{-\theta}, 
+\end{equation} 
+$$
+f(x) = w (\theta+\tau) x^{-(\theta+\tau+1)}  + (1-w) \theta x^{-\theta-1}.
+$$
+
+$$
+\frac{\alpha}{\alpha-1}=t \Rightarrow \frac{-1}{\alpha}=1/t-1 = \frac{1-t}{t} \Rightarrow \alpha = \frac{t}{t-1}
+$$
+
+when there are two distinct eigenvalues. We may call the former a weighted average of Loggamma and Pareto with the same tail index and the latter a weighted average of two different Pareto distributions.\\
+
+For the single eigenvalue case, we saw that the tail index is $\mu$ and can obtain the second order parameter as follows:
+\begin{align}
+\label{}
+    \frac{1-F(tx)}{1-F(t)}-x^{-\mu}&=  x^{-\mu}\Bigg{(}\frac{\pi_1\beta(\mu \, t^{-\mu} \, \log tx+t^{-\mu})+(1-\pi_1\beta)t^{-\mu}}{\pi_1\beta(\mu \, t^{-\mu}\, \log t \, +t^{-\mu})+(1-\pi_1\beta)t^{-\mu}}-1\Bigg{)}\\
+    &  = x^{-\mu}\Bigg{(}\frac{\pi_1\beta \, \mu \, t^{-\mu}\, \log x  }{\pi_1\beta(\mu \, t^{-\mu}\, \log t \, +t^{-\mu})+(1-\pi_1\beta)t^{-\mu}}\Bigg{)}\\
+    &  = x^{-\mu}\Bigg{(}\frac{\pi_1\beta \, \mu \,  \log x  }{\pi_1\beta\, \mu \,  \log t \, +1}\Bigg{)}\\
+%    &\sim x^{-\mu}\frac{\log x}{\log t}
+\end{align}
+Hence if we can take $a(t)=1/\log t$, we have
+\begin{equation}
+\label{ }
+\lim_{t \rightarrow \infty}\frac{\frac{1-F(tx)}{1-F(t)}-x^{-\mu}}{a(t)}=\lim_{t \rightarrow \infty}\Bigg{[}  x^{-\mu}\Bigg{(}\frac{\pi_1\beta \, \mu \,  \log x  }{\pi_1\beta\, \mu \,  \log t \, +1}\Bigg{)}\times \log t \Bigg{]}= x^{-\mu} \log x,
+\end{equation} indicating the second order parameter $\rho =0$.
+For the two-eigenvalue case, as the tail index is $\theta$ we get
+\begin{align}
+\label{}
+    \frac{1-F(tx)}{1-F(t)}-x^{-\theta}&= \frac{w(tx)^{-(\theta+\tau)}-(1-w)(tx)^{-\theta}}{ wt^{-(\theta+\tau)}+(1-w)t^{-\theta}} -x^{-\theta}\\
+    &=x^{-\theta}\Bigg{(}\frac{w(tx)^{-\tau}-(1-w)t^{-\tau}}{ wt^{-\tau}+(1-w) }-1\Bigg{)}\\
+    &  = x^{-\theta}  \frac{t^{-\tau}(x^{-\tau}-1)}{t^{-\tau}+1/w-1}   \\
+%    &\sim  x^{-\theta} (x^{-\tau}-1)t^{-\tau}(1/w-1)
+\end{align}
+Thus if we let $a(t)=({-\tau})t^{-\tau}/(1/w-1)$, we obtain
+\begin{equation}
+\label{2nd.order.case3}
+\lim_{t \rightarrow \infty}\frac{\frac{1-F(tx)}{1-F(t)}-x^{-\theta}}{a(t)}= \lim_{t \rightarrow \infty} \Bigg{[}x^{-\theta}  \frac{t^{-\tau}(x^{-\tau}-1)}{t^{-\tau}+1/w-1}  \times \frac{(1/w-1)}{({-\tau})t^{-\tau}}\Bigg{]}=x^{-\theta}\, \frac{x^{-\tau}-1}{-\tau},
+\end{equation} which satisfies the condition in (\ref{2nd.order.cond}) with $\rho=-\tau <0$. As the tail index $\theta$ and $\tau$ are linearly independent, we see that the second order parameter can take any negative value. We note that the tail function in (\ref{F.case3}) and the result in (\ref{2nd.order.case3}) are consistent with the convex mixture of Pareto type models considered in \cite{Feuer+Hall+etal:99a}; see also \cite{Geluk+De-Ha+etal:97a}. \\
+
+We wrap up our discussion as follows. If the calibrated PH$_2$ class fitted to log data results in a weighted average of an exponential and an Erlang with the same scale parameter, then the data indicates a heavy-tailed distribution looking like an exact Pareto distribution with no secondary order parameter. On the other hand, if the fit leads to  a weighted average of two exponentials, the data indicates a more complicated heavy tail with a strictly negative secondary order parameter. When combined, thus, the PH$_2$ class can cover the entire second order parameter range $\rho \le 0$. Also, for the latter case, the Hill estimator may be biased depending on the speed of $k(n)$ (study more , EKM p.341-342). Considering that the second order condition (\ref{2nd.order.cond}) is rarely verifiable in practice, the PH$_2$ approach is appealing as it attempts to fit the whole dataset with a parametric model that is simple yet consistent with EVT in terms of both the first (i.e., the tail index) and the second order parameters\footnote{Need to emphasize this throughout the paper. Important to see that PH$_2$ automatically determine the two different $\rho$ cases}, leading to a more accurate tail modeling based on more information, an approach  that the standard Hill estimator is never able to achieve. As the shape and higher-order variations of  the true underlying loss distribution are unknown in practice, it is advantageous to determine the tail index with PH$_2$ which manages the task automatically during calibration.
+
+%================================
+\section{Implementation and numerical examples}
+We consider several parametric distributions and actual loss datasets to illustrate the theoretical findings developed so far. For each dataset, we log transform and fit the PH$_2 (\pi, T)$ for excess losses over different thresholds $d$.
+
+First, we construct the confidence intervals for the estimated tail index on the eigenvalue plot for these datasets. Second, we estimate the second order parameter by looking at the estimated generator $T$. As previously mentioned.
+
+[Alternative methods for the second order parameter estimation, see Section3 of \cite{Goege+Beirl+etal:10a}; I think we can try these for our paper]
+\subsection{Burr distribution}
+[See p. 2640 of \cite{Goege+Beirl+etal:10a} for the density and second parameter]
+
+\subsection{Pareto and its two-point mixture}
+[We can use our model directly]
+\subsection{GPD and GEV}
+[See p. 340 of \cite{Goege+Wet:12a} for the density and second parameter]
+%\subsection{Hill horror plot}
+
+
+%================================
+\section{Progress and concerns}
+%================================
+
+\begin{itemize}
+\item Note that the idea of `log-transform' may not work well if one of the values of observed (or generated) $Y$ is below 1. In the real practices, it could be okay as we rarely use the whole dataset to calibarte the tail parameters but only a portion of it (like 10\%, 20\%, or 50\% - which is already a lot).
+\end{itemize}
+
+%================================
+\section*{Acknowledgments}
+% choose one from below
+
+%The author gratefully acknowledges the help of B. Sundt and wishes to thank the referee for helpful suggestions. This paper was support in part by  of the fund name (no. xxxx) while the author was visiting the Department of Quantitative Economics of the University of Amsterdam.
+
+%We acknowledge with thanks the support from the fund (project No. HKU 706611P). We also thank John Doe, and the anonymous referees for their insightful comments.
+
+%This research was supported by Basic Science Research Program of the National Research Foundation of Korea (2012-8-0666 for Jeon; 2012-8-1657 for Kim) funded by the Korean government. The authors are grateful to the reviewers for helpful comments and suggestions.
+%================================
+
+\bibliographystyle{../../References/natbib}
+\bibliography{../../References/jkimbib}
+\end{document}
