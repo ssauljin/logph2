@@ -9,6 +9,7 @@ import os, sys
 import numpy as np, pandas as pd, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import matplotlib.ticker
 from ph2sim import DISTS, ALPHA, true_quantile
 
 RES = sys.argv[1] if len(sys.argv) > 1 else (
@@ -97,6 +98,9 @@ def panel(plot, metric, ylabel, fname, ref=None, ylim=None):
         if ylim:
             ax.set_ylim(*ylim)
         ax.set_xscale("log"); ax.set_title(title[d], fontsize=10)
+        ticks = [KGRID[i] for i in (0, 2, 4, 6, 9)]
+        ax.set_xticks(ticks, [str(t) for t in ticks])
+        ax.xaxis.set_minor_formatter(matplotlib.ticker.NullFormatter())
         ax.grid(alpha=0.25, lw=0.6)
         for sp in ("top", "right"):
             ax.spines[sp].set_visible(False)

@@ -15,4 +15,9 @@ pip install numpy scipy pandas matplotlib
 python3 run_mc.py 500
 python3 analyze.py
 ```
-* `RESULTS.md` – summary of the n = 2000, R = 500 run and suggested framing.
+* `RESULTS.md` – findings for n = 2000 and the n = 10000 rerun (min-shift, GPD-loc5; outputs in `n10000/`).
+
+```bash
+python3 run_mc.py 500 10000 mc_results_n10000.csv   # ~38 min on 4 cores
+python3 analyze.py mc_results_n10000.csv n10000 10000
+```

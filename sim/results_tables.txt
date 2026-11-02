@@ -1,3 +1,4 @@
+n = 2000, R = 500 per DGP, VaR level p = 0.9995
 RMSE of xi-hat and of log VaR (k window 50..1000); sens = median within-sample SD of xi-hat over k
       dist     method  xi_best  k_best  xi_worst  xi_k200  xi_k1000  q_best  q_worst  q_k200  q_k1000  sens  capped
 PH2-Erlang       Hill    0.100     100     0.160    0.105     0.160   0.251    0.473   0.251    0.473 0.037   0.000
@@ -63,7 +64,7 @@ Two-Pareto  0.92  0.94  0.92  0.94  0.95  0.94  0.95  0.95  0.97
 GPD         0.96  0.97  0.98  0.99  0.99  1.00  1.00  1.00  1.00
 Frechet     0.92  0.96  0.96  0.97  0.98  0.98  0.99  0.99  0.99
 
-PH2-AIC: RMSE of xi-hat by selected sub-family, k in {200, 400, 1000}
+PH2-AIC: RMSE of xi-hat by selected sub-family, k in [200, 400, 1000]
                         n                rmse          
 picked          A (rho<0) B (rho=0) A (rho<0) B (rho=0)
 dist       k                                           
