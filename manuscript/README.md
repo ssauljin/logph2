@@ -1,6 +1,12 @@
 # Manuscript draft
 
 `main.tex` – "Second-order behaviour of log phase-type tails and threshold-robust tail index estimation".
+Formatted for submission to the *Scandinavian Actuarial Journal* (Taylor & Francis), following the
+T&F manuscript layout guide: Times 12 pt, double spacing, line numbers, 2.5 cm margins, abstract of about
+200 words, author-date references, and disclosure / funding / data availability statements before the
+references. Taylor & Francis no longer offers a LaTeX class for this journal, and the journal's own
+instructions page could not be checked from the build environment, so verify the items listed in the
+pull request against the journal's Instructions for Authors before submitting.
 `main.pdf` – compiled draft. Red bracketed text marks items for the authors (second author's email, code URL,
 acknowledgements, draft date).
 

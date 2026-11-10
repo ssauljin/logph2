@@ -1,7 +1,15 @@
-\documentclass[11pt]{article}
-\usepackage[letterpaper,margin=1in]{geometry}
+% Submission layout following the Taylor & Francis manuscript layout guide
+% (Scandinavian Actuarial Journal): Times 12 pt, double spacing, line numbers,
+% margins >= 2.5 cm, author-date references, statements before the references.
+\documentclass[12pt]{article}
+\usepackage[a4paper,margin=2.5cm]{geometry}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+\usepackage{mathptmx}
+\usepackage{setspace}
+\usepackage[mathlines]{lineno}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage{authblk}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{natbib}
 \usepackage{graphicx}
@@ -21,6 +29,14 @@
 \newtheorem{remark}[theorem]{Remark}
 
 \newcommand{\todo}[1]{{\color{red}[#1]}}
+
+% T&F heading levels: bold; bold italic; italic
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries\itshape}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\itshape}{\thesubsubsection.}{0.5em}{}
+\renewcommand\Authfont{\normalsize}
+\renewcommand\Affilfont{\small\itshape}
+\setlength{\emergencystretch}{1.5em}
 \newcommand{\bF}{\overline{F}}
 \newcommand{\E}{\mathrm{E}}
 \newcommand{\PH}{\mathrm{PH}}
@@ -29,20 +45,25 @@
 \DeclareMathOperator{\diag}{diag}
 
 \title{Second-order behaviour of log phase-type tails and\\ threshold-robust tail index estimation}
-\author{Joseph H. T. Kim\thanks{Department of Applied Statistics, Yonsei University, Seoul, Korea. Email: jhtkim@yonsei.ac.kr}
-\and Himchan Jeong\thanks{Department of Statistics and Actuarial Science, Simon Fraser University, Burnaby, BC, Canada; and Department of Next Generation Smart Energy System Convergence, Gachon University, Korea. Email: \todo{email}}}
-\date{\todo{Draft of \today}}
+\author[a]{Joseph H. T. Kim\thanks{Corresponding author. Email: jhtkim@yonsei.ac.kr \todo{confirm corresponding author; add ORCID iDs if wished}}}
+\author[b,c]{Himchan Jeong\thanks{Email: \todo{email}}}
+\affil[a]{Department of Applied Statistics, Yonsei University, Seoul, Korea}
+\affil[b]{Department of Statistics and Actuarial Science, Simon Fraser University, Burnaby, BC, Canada}
+\affil[c]{Department of Next Generation Smart Energy System Convergence, Gachon University, Korea}
+\date{}
 
 \begin{document}
 \maketitle
+\doublespacing
+\linenumbers
 
 \begin{abstract}
-Tail index estimates obtained from the Hill estimator or from a generalised Pareto (GPD) fit to exceedances are notoriously sensitive to the choice of threshold, largely because of the second-order behaviour of the tail that both methods ignore. Building on the eigenvalue plot of \citet{KimKim2015}, which fits a two-phase phase-type (PH$_2$) distribution to log-excesses, we study what this parametric class can and cannot deliver. We give an explicit characterisation of PH$_2$ with exact parameter ranges: a log-excess is PH$_2$ if and only if the loss tail is either a signed mixture of two Pareto tails or a mixture of a Pareto and a log-gamma tail with the same index. We show that these two cases satisfy second-order regular variation with $\rho=-\tau<0$ and $\rho=0$, respectively, so that log-PH$_2$ tails cover every second-order parameter $\rho\le 0$, and we derive the exact threshold bias of the Hill functional under each case. For the Pareto--log-gamma (Exp+Erlang) sub-model we obtain the Fisher information in closed form and show that it becomes singular at the Pareto boundary, where the variance of the tail index estimator grows like $\xi^2/(4p^2)$ in the Erlang weight $p$. An extensive simulation study ($n=2000$ and $n=10\,000$, seven tail models) shows that the Exp+Erlang sub-model gives the most threshold-robust tail index and high-quantile estimates in most settings, that profile-likelihood intervals attain close to nominal coverage wherever the fit is approximately unbiased, and that the Hill estimator remains preferable for tails close to an exact Pareto. In contrast, the two-exponential sub-family is weakly identified, and the sign and size of $\rho$ cannot be recovered from the fit at realistic sample sizes. An application to the Danish fire insurance losses shows that the Exp+Erlang fit gives the most stable high-quantile estimates across thresholds and that it reduces to the Hill estimator in the extreme tail, where the data are close to Pareto. We give practical recommendations for actuarial tail modelling.
+\noindent Tail index estimates from the Hill estimator or from a generalised Pareto (GPD) fit to exceedances are notoriously sensitive to the threshold, because both ignore the second-order behaviour of the tail. Building on the eigenvalue plot of \citet{KimKim2015}, which fits a two-phase phase-type (PH$_2$) distribution to log-excesses, we show that a log-excess is PH$_2$ if and only if the loss tail is a signed two-Pareto mixture or a Pareto--log-gamma mixture, and that these tails are second-order regularly varying with $\rho<0$ and $\rho=0$, respectively. For the Pareto--log-gamma (Exp+Erlang) sub-model we derive the Fisher information in closed form; it is singular at the Pareto boundary, where the variance of the tail index estimator grows like $\xi^2/(4p^2)$ in the Erlang weight $p$. A simulation study with seven tail models shows that the Exp+Erlang sub-model gives the most threshold-robust tail index and high-quantile estimates in most settings, with profile-likelihood intervals close to nominal coverage where the fit is unbiased, while the Hill estimator remains preferable for nearly Pareto tails. The two-exponential sub-family is weakly identified, and $\rho$ cannot be recovered from the fit. For the Danish fire losses, the Exp+Erlang fit gives the most stable Value-at-Risk estimates across thresholds and reduces to the Hill estimator in the extreme tail.
 \end{abstract}
 
-\noindent\textbf{Keywords:} Heavy tails; Hill estimator; Phase-type distribution; Second-order regular variation; Threshold selection; Value-at-Risk.
+\noindent\textbf{Keywords:} Heavy tails; Hill estimator; phase-type distribution; second-order regular variation; threshold selection; Value-at-Risk
 
-\noindent\textbf{MSC 2020:} 62G32; 60E05; 62F12; 62P05.
+\noindent\textbf{MSC 2020:} 62G32; 60E05; 62F12; 62P05
 
 \section{Introduction}\label{sec:intro}
 
@@ -168,11 +189,17 @@ Let $\bF$ have a log-$\PH_2$ tail above $u_0$, and write $s=\log(t/u_0)$ for $t\
 \begin{enumerate}
 \item[(a)] In case \textup{(EE)} with $0<p\le1$, $\bF\in 2RV_{-\mu,0}$ with
 \begin{equation}\label{eq:AEE}
-A(t)=\frac{p\mu}{1+p\mu s}\sim\frac{1}{\log t},\qquad\text{and}\qquad \frac{\bF(tx)}{\bF(t)}-x^{-\mu}=A(t)\,x^{-\mu}\log x\quad\text{for all } t\ge u_0,\ x\ge1 .
+\begin{gathered}
+A(t)=\frac{p\mu}{1+p\mu s}\sim\frac{1}{\log t},\\
+\frac{\bF(tx)}{\bF(t)}-x^{-\mu}=A(t)\,x^{-\mu}\log x\qquad\text{for all } t\ge u_0,\ x\ge1 .
+\end{gathered}
 \end{equation}
 \item[(b)] In case \textup{(2E)} with $w<1$ and $w\ne0$, $\bF\in 2RV_{-\theta,-\tau}$ with
 \begin{equation}\label{eq:A2E}
-A(t)=\frac{-\tau w e^{-\tau s}}{1-w+we^{-\tau s}},\qquad\text{and}\qquad \frac{\bF(tx)}{\bF(t)}-x^{-\theta}=A(t)\,x^{-\theta}\,\frac{x^{-\tau}-1}{-\tau}\quad\text{for all } t\ge u_0,\ x\ge1 .
+\begin{gathered}
+A(t)=\frac{-\tau w e^{-\tau s}}{1-w+we^{-\tau s}},\\
+\frac{\bF(tx)}{\bF(t)}-x^{-\theta}=A(t)\,x^{-\theta}\,\frac{x^{-\tau}-1}{-\tau}\qquad\text{for all } t\ge u_0,\ x\ge1 .
+\end{gathered}
 \end{equation}
 The sign of $A$ is that of $-w$, and $|A|\in RV_{-\tau}$.
 \item[(c)] If $p=0$ in \textup{(EE)} or $w=0$ in \textup{(2E)}, the tail is exactly Pareto above $u_0$ and the left-hand side of \eqref{eq:2rv} vanishes identically.
@@ -271,7 +298,7 @@ For each DGP we draw $R=500$ samples of size $n=2000$ (as in \citet{KimKim2015})
 \item the 2E sub-family;
 \item PH$_2$ with the sub-family chosen by AIC (AIC) or by BIC.
 \end{itemize}
-The threshold grid is $k\in\{25,50,100,150,200,300,400,600,800,1000\}$ for $n=2000$, and five times these values for $n=10\,000$, so that $k$ ranges from $1.25\%$ to $50\%$ of the sample. For $n=10\,000$ we also refit Hill and the PH$_2$ models to the min-shifted log-excesses $\log\{(Y-m)/(u-m)\}$, $m=\min_iY_i$ (E+E$_s$); the GPD fit on $Y-u$ is unaffected by the shift. The target quantile is $\VaR_p$ with $p=1-1/n$, which requires genuine extrapolation. We report the root mean squared error (RMSE) and bias of $\hat\xi$, and the RMSE of $\log(\widehat{\VaR}_p/\VaR_p)$, truncated at $\pm3$; the truncation is active only for the Hill estimator under the Burr DGP. To summarise sensitivity to the threshold, we report both the best RMSE over the grid (an oracle choice of threshold) and the worst RMSE over the grid, excluding the smallest $k$. All code, raw estimates and summary files are available with the paper (Section~\ref{sec:availability}).
+The threshold grid is $k\in\{25,50,100,150,200,300,400,600,800,1000\}$ for $n=2000$, and five times these values for $n=10\,000$, so that $k$ ranges from $1.25\%$ to $50\%$ of the sample. For $n=10\,000$ we also refit Hill and the PH$_2$ models to the min-shifted log-excesses $\log\{(Y-m)/(u-m)\}$, $m=\min_iY_i$ (E+E$_s$); the GPD fit on $Y-u$ is unaffected by the shift. The target quantile is $\VaR_p$ with $p=1-1/n$, which requires genuine extrapolation. We report the root mean squared error (RMSE) and bias of $\hat\xi$, and the RMSE of $\log(\widehat{\VaR}_p/\VaR_p)$, truncated at $\pm3$; the truncation is active only for the Hill estimator under the Burr DGP. To summarise sensitivity to the threshold, we report both the best RMSE over the grid (an oracle choice of threshold) and the worst RMSE over the grid, excluding the smallest $k$. All code, raw estimates and summary files are available with the paper (see the Data availability statement).
 
 \subsection{Tail index}\label{sec:simxi}
 
@@ -380,11 +407,17 @@ For practitioners we suggest the following.
 
 Several limitations should be noted. Our simulation covers one tail index ($\alpha=2$) and two sample sizes; tails heavier or lighter than this should be examined. The DGPs supported near zero (GPD, Burr) show that a log-scale method should not be pushed to thresholds in the body of the distribution. Finally, a formal test of $\rho=0$ against $\rho<0$ within the PH$_2$ family would require handling a boundary parameter, an unidentified nuisance parameter and a singular information matrix at once. A parametric bootstrap of the likelihood ratio is a natural candidate, which we leave for future work, together with extensions to inhomogeneous phase-type models \citep{AlbrecherBladt2019}.
 
-\section*{Code and data availability}\label{sec:availability}
-All simulation code, raw per-sample estimates, summary tables and the scripts that produce every table and figure in this paper are available at \todo{repository URL or supplementary material}.
-
 \section*{Acknowledgements}
 \todo{To be added.}
+
+\section*{Disclosure statement}
+No potential conflict of interest was reported by the author(s). \todo{Confirm.}
+
+\section*{Funding}
+\todo{Funding information, or delete this section if there was no funding.}
+
+\section*{Data availability statement}\label{sec:availability}
+The Danish fire insurance losses analysed in Section~\ref{sec:data} are publicly available, for example as the data set \texttt{danish} in the R package \texttt{evir}. All simulation code, raw per-sample estimates, summary tables and the scripts that produce every table and figure in this paper are available at \todo{repository URL or supplementary material}.
 
 \bibliographystyle{apalike}
 \bibliography{refs}

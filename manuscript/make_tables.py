@@ -28,7 +28,7 @@ def rmse_table(tab, methods, labels, stat_cols, stat_labels, caption, label, fna
     """Rows = DGPs; for each statistic, one column per method; row minimum in bold."""
     dists = [d for d in DGP_LABEL if d in set(tab.dist)]
     ncol = len(methods) * len(stat_cols)
-    lines = [r"\begin{table}[t]", r"\centering", r"\small",
+    lines = [r"\begin{table}[t]", r"\centering", r"\footnotesize", r"\setlength{\tabcolsep}{4pt}",
              rf"\caption{{{caption}}}", rf"\label{{{label}}}",
              r"\begin{tabular}{ll" + "r" * ncol + "}", r"\toprule"]
     head1 = r" & & " + " & ".join(
@@ -91,7 +91,7 @@ def share_table():
     s10 = pd.read_csv(os.path.join(SIM, "n10000", "ph2_share_rho0_AIC.csv"), index_col=0)
     b10 = pd.read_csv(os.path.join(SIM, "n10000", "ph2_share_rho0_BIC.csv"), index_col=0)
     k2, k10 = ["100", "400", "1000"], ["500", "2000", "5000"]
-    lines = [r"\begin{table}[t]", r"\centering", r"\small",
+    lines = [r"\begin{table}[t]", r"\centering", r"\footnotesize", r"\setlength{\tabcolsep}{4pt}",
              r"\caption{Proportion of samples in which the $\rho=0$ (Exp+Erlang) sub-family is "
              r"selected over the two-exponential sub-family ($\rho<0$).}",
              r"\label{tab:share}", r"\begin{tabular}{llrrrrrrrrrrrr}", r"\toprule",
@@ -137,7 +137,7 @@ def cond_table():
         rhos = {l.split()[0]: l.split()[1:] for l in rh[2:]}
         rows = [r + (rhos.get(r[1], ["nan", "nan"])[ks.index(r[2])],) if r[0] == n else r
                 for r in rows]
-    lines = [r"\begin{table}[t]", r"\centering", r"\small",
+    lines = [r"\begin{table}[t]", r"\centering", r"\footnotesize", r"\setlength{\tabcolsep}{4pt}",
              r"\caption{RMSE of $\hat\xi$ for the AIC-selected PH$_2$ fit, split by the selected "
              r"sub-family, and median $\hat\rho=-\hat\tau$ among fits selecting the two-exponential "
              r"sub-family.}", r"\label{tab:cond}",
@@ -168,7 +168,7 @@ def infl_table():
     from fisher_B import avar_xi
     ps = [0.05, 0.1, 0.2, 0.3, 0.5, 0.7, 0.9]
     vals = [avar_xi(1.0, p) for p in ps]  # avar/xi^2 is free of mu; mu = 1 gives xi = 1
-    lines = [r"\begin{table}[t]", r"\centering", r"\small",
+    lines = [r"\begin{table}[t]", r"\centering", r"\footnotesize", r"\setlength{\tabcolsep}{4pt}",
              r"\caption{Asymptotic variance of the Exp+Erlang MLE $\hat\xi$, relative to $\xi^2$ "
              r"(the asymptotic variance of the Hill estimator under an exact Pareto tail), "
              r"as a function of the Erlang weight $p$.}", r"\label{tab:infl}",
@@ -192,7 +192,7 @@ def cov_table():
     rows = [m.groups() for m in map(rx.match, open(path)) if m]
     if not rows:
         return
-    lines = [r"\begin{table}[t]", r"\centering", r"\small",
+    lines = [r"\begin{table}[t]", r"\centering", r"\footnotesize", r"\setlength{\tabcolsep}{4pt}",
              r"\caption{Empirical coverage (mean width) of nominal 95\% intervals for $\xi=0.5$, "
              r"$n=2000$, $R=500$.}", r"\label{tab:cov}",
              r"\begin{tabular}{lrlllr}", r"\toprule",
@@ -255,7 +255,7 @@ def danish_tables():
     cols = [("xi", r"$\hat\xi$", "{:.3f}"), ("var995", r"$\widehat{\mathrm{VaR}}_{0.995}$", "{:.2f}"),
             ("var999", r"$\widehat{\mathrm{VaR}}_{0.999}$", "{:.2f}")]
     meth = [("hill", "Hill"), ("gpd", "GPD"), ("ph2_EE", "E+E")]
-    lines = [r"\begin{table}[t]", r"\centering", r"\small",
+    lines = [r"\begin{table}[t]", r"\centering", r"\footnotesize", r"\setlength{\tabcolsep}{4pt}",
              r"\caption{Danish fire losses: standard deviation of each estimate across the thresholds "
              r"of Figure~\ref{fig:danish} within three threshold windows (smallest value in bold).}",
              r"\label{tab:danishsd}", r"\begin{tabular}{l" + "rrr" * len(cols) + "}", r"\toprule",
