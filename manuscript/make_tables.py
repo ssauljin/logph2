@@ -216,3 +216,63 @@ def cov_table():
 
 cov_table()
 print("tables written:", sorted(os.listdir(OUT)))
+
+
+# ---- Danish fire losses (from figures/danish.csv, written by empirical.py) -----------------
+def danish_tables():
+    path = os.path.join(HERE, "figures", "danish.csv")
+    if not os.path.exists(path):
+        return
+    d = pd.read_csv(path)
+    n = 2167
+    pick = [56, 109, 246, 482, 1084]
+    sel = d[d.k.isin(pick)]
+    lines = [r"\begin{table}[t]", r"\centering", r"\footnotesize", r"\setlength{\tabcolsep}{4pt}",
+             r"\caption{Danish fire losses: tail index and VaR estimates at selected thresholds "
+             r"($n=2167$, losses in millions of DKK).}", r"\label{tab:danish}",
+             r"\begin{tabular}{rrrrlrrrrrrr}", r"\toprule",
+             r" & & \multicolumn{4}{c}{$\hat\xi$} & \multicolumn{3}{c}{$\widehat{\mathrm{VaR}}_{0.995}$} "
+             r"& \multicolumn{3}{c}{$\widehat{\mathrm{VaR}}_{0.999}$} \\",
+             r"\cmidrule(lr){3-6} \cmidrule(lr){7-9} \cmidrule(lr){10-12}",
+             r"$k$ & $u$ & Hill & GPD & E+E (95\% profile CI) & $\hat p$ & Hill & GPD & E+E "
+             r"& Hill & GPD & E+E \\", r"\midrule"]
+    for _, r in sel.iterrows():
+        lines.append(" & ".join([
+            f"{int(r.k)}", f"{r.u:.2f}", f"{r.xi_hill:.3f}", f"{r.xi_gpd:.3f}",
+            f"{r.xi_ph2_EE:.3f} ({r.xi_ph2_EE_lo:.3f}, {r.xi_ph2_EE_hi:.3f})", f"{r.p_hat:.2f}",
+            f"{r.var995_hill:.1f}", f"{r.var995_gpd:.1f}", f"{r.var995_ph2_EE:.1f}",
+            f"{r.var999_hill:.1f}", f"{r.var999_gpd:.1f}", f"{r.var999_ph2_EE:.1f}"]) + r" \\")
+    lines += [r"\bottomrule", r"\end{tabular}", r"\par\smallskip",
+              r"\parbox{\linewidth}{\footnotesize Empirical quantiles: 99.5\%: 34.8; 99.9\%: 131.6. "
+              r"$\hat p$ is the fitted Erlang weight of the E+E model; $\hat p\approx 0$ means that "
+              r"E+E coincides with the Hill estimator.}", r"\end{table}"]
+    open(os.path.join(OUT, "tab_danish.tex"), "w").write("\n".join(lines) + "\n")
+
+    kmax = int(d.k.max())
+    wins = [(50, 200, r"$50\le k\le 200$ ($u\approx 6$--$17$)"),
+            (200, kmax, rf"$200\le k\le {kmax}$ ($u\approx 1.8$--$6$)"),
+            (int(d.k.min()), kmax, rf"all thresholds (${int(d.k.min())}\le k\le {kmax}$)")]
+    cols = [("xi", r"$\hat\xi$", "{:.3f}"), ("var995", r"$\widehat{\mathrm{VaR}}_{0.995}$", "{:.2f}"),
+            ("var999", r"$\widehat{\mathrm{VaR}}_{0.999}$", "{:.2f}")]
+    meth = [("hill", "Hill"), ("gpd", "GPD"), ("ph2_EE", "E+E")]
+    lines = [r"\begin{table}[t]", r"\centering", r"\small",
+             r"\caption{Danish fire losses: standard deviation of each estimate across the thresholds "
+             r"of Figure~\ref{fig:danish} within three threshold windows (smallest value in bold).}",
+             r"\label{tab:danishsd}", r"\begin{tabular}{l" + "rrr" * len(cols) + "}", r"\toprule",
+             " & " + " & ".join(rf"\multicolumn{{3}}{{c}}{{{lab}}}" for _, lab, _ in cols) + r" \\",
+             " ".join(rf"\cmidrule(lr){{{2 + 3 * i}-{4 + 3 * i}}}" for i in range(len(cols))),
+             "Window & " + " & ".join([m for _, m in meth] * len(cols)) + r" \\", r"\midrule"]
+    for lo, hi, lab in wins:
+        w = d[(d.k >= lo) & (d.k <= hi)]
+        row = [lab]
+        for c, _, f in cols:
+            sds = [w[f"{c}_{m}"].std() if c != "xi" else w[f"xi_{m}"].std() for m, _ in meth]
+            best = min(round(v, 3) for v in sds)
+            row += [rf"\textbf{{{f.format(v)}}}" if round(v, 3) == best else f.format(v) for v in sds]
+        lines.append(" & ".join(row) + r" \\")
+    lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    open(os.path.join(OUT, "tab_danish_sd.tex"), "w").write("\n".join(lines) + "\n")
+
+
+danish_tables()
+print("danish tables:", [f for f in os.listdir(OUT) if "danish" in f])
