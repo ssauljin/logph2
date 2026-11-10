@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\small
+\caption{RMSE of $\log(\widehat{\mathrm{VaR}}_{0.9995}/\mathrm{VaR}_{0.9995})$ over $k\in\{50,\dots,1000\}$, $n=2000$, $R=500$.}
+\label{tab:q2000}
+\begin{tabular}{llrrrrrrrr}
+\toprule
+ & & \multicolumn{4}{c}{Best $k$} & \multicolumn{4}{c}{Worst $k$} \\
+\cmidrule(lr){3-6} \cmidrule(lr){7-10}
+DGP & $\rho$ & Hill & GPD & E+E & AIC & Hill & GPD & E+E & AIC \\
+\midrule
+PH$_2$-Erlang & $0$ & 0.251 & 0.229 & \textbf{0.197} & 0.211 & 0.473 & 0.434 & \textbf{0.347} & 0.379 \\
+Loggamma & $0$ & 0.204 & 0.220 & \textbf{0.194} & 0.229 & \textbf{0.339} & 0.446 & 0.348 & 0.385 \\
+Burr & $-0.5$ & 0.429 & 0.388 & \textbf{0.327} & 0.351 & 3.000 & \textbf{1.193} & 2.228 & 2.228 \\
+Two-Pareto & $-0.5$ & \textbf{0.137} & 0.201 & 0.189 & 0.281 & \textbf{0.268} & 0.363 & 0.294 & 0.334 \\
+GPD & $-1$ & 0.286 & \textbf{0.197} & 0.220 & 0.233 & 2.551 & \textbf{0.402} & 0.761 & 0.761 \\
+Fr\'echet & $-2$ & \textbf{0.187} & 0.237 & 0.189 & 0.190 & 0.465 & 0.393 & \textbf{0.320} & 0.357 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\parbox{\linewidth}{\footnotesize Log-ratio errors are truncated at $\pm 3$ before averaging. ``Best'' is the smallest RMSE over the threshold grid (oracle threshold); ``worst'' is the largest RMSE over the grid, a measure of sensitivity to the threshold choice. The smallest value in each row and block is in bold.}
+\end{table}

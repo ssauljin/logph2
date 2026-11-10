@@ -26,7 +26,8 @@ PH2-MLE on log(Y/u) with sub-family (A) two exponentials (rho = -tau) and
    (GPD RMSE 0.64-0.73 at k = 50) nor Hill's growing bias (GPD/Burr DGPs).
    Best-k RMSE(xi): B beats GPD and Hill on PH2-Erlang (0.039 vs 0.073 / 0.100),
    GPD (0.033 vs 0.044 / 0.088) and Burr (0.123 vs 0.187 / 0.260); ties GPD on Loggamma (0.050 vs 0.051).
-   For VaR_0.9995, B has lower RMSE than GPD at every k <= 400 for all six DGPs.
+   For VaR_0.9995, B has lower RMSE than GPD at every k <= 400 for five of the six DGPs
+   (for Burr only up to k = 200).
 2. **Hill wins for near-Pareto tails** (Two-Pareto, Frechet), as theory predicts
    when the second-order term is weak; B is second there, with a stable negative bias (about -0.06 to -0.09).
 3. **The general two-exponential sub-family (A) hurts.** When AIC selects A,
