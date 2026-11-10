@@ -1,0 +1,34 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Danish fire losses: expected shortfall and expected annual loss in three excess-of-loss layers (millions of DKK), with 95\% profile-likelihood intervals, at three thresholds.}
+\label{tab:danishrisk}
+\begin{tabular}{llrrr}
+\toprule
+Quantity & Method & $k=109$ ($u=9.9$) & $k=246$ ($u=5.1$) & $k=482$ ($u=3.2$) \\
+\midrule
+$\mathrm{ES}_{0.995}$ & Hill & 115.1 (70.3, 247.9) & 159.3 (96.6, 320.9) & 157.4 (104.7, 262.1) \\
+ & GPD & 81.9 (54.0, 234.1) & 116.8 (63.3, 476.3) & 128.9 (72.3, 337.8) \\
+ & E+E & 78.7 (53.7, 197.0) & 119.3 (72.3, 297.7) & 120.0 (73.2, 251.6) \\
+\addlinespace
+$\mathrm{ES}_{0.999}$ & Hill & 317.8 (163.9, 850.7) & 497.5 (264.5, 1170.4) & 489.1 (295.7, 906.6) \\
+ & GPD & 182.5 (95.3, 823.4) & 321.6 (132.4, 1939.2) & 374.0 (170.5, 1265.0) \\
+ & E+E & 172.8 (101.0, 637.3) & 327.1 (167.1, 1069.5) & 333.8 (173.6, 863.2) \\
+\addlinespace
+Layer 30 xs 20 [40.7] & Hill & 46.03 (32.38, 63.13) & 49.62 (35.72, 67.30) & 49.73 (37.06, 65.68) \\
+ & GPD & 45.07 (31.75, 61.90) & 46.41 (31.68, 65.93) & 46.46 (31.76, 65.86) \\
+ & E+E & 44.13 (30.72, 61.19) & 47.30 (33.05, 65.67) & 46.22 (31.95, 64.42) \\
+\addlinespace
+Layer 50 xs 50 [16.3] & Hill & 21.65 (11.73, 37.31) & 26.85 (16.62, 41.80) & 26.76 (17.92, 39.07) \\
+ & GPD & 16.80 (7.43, 33.83) & 22.32 (10.44, 42.15) & 23.39 (12.33, 40.76) \\
+ & E+E & 15.81 (7.27, 32.83) & 23.23 (12.67, 40.24) & 22.80 (12.61, 38.06) \\
+\addlinespace
+Layer 100 xs 100 [17.9] & Hill & 14.44 (6.28, 30.19) & 20.16 (10.99, 35.30) & 20.01 (12.24, 31.81) \\
+ & GPD & 8.49 (1.90, 26.81) & 14.94 (4.62, 37.32) & 16.45 (6.76, 34.68) \\
+ & E+E & 7.79 (2.42, 25.39) & 15.71 (6.78, 33.64) & 15.59 (7.01, 30.80) \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\parbox{\linewidth}{\footnotesize Layer entries are expected annual losses, i.e.\ the expected loss per claim in the layer times the observed claim frequency ($2167/11\approx197$ claims per year); the empirical burning cost per year is shown in square brackets. Intervals are conditional on the threshold and on the exceedance proportion $k/n$.}
+\end{table}

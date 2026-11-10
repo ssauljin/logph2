@@ -18,6 +18,12 @@ acknowledgements, draft date).
   Section 7 uses the Danish fire losses (n = 2167, 1980-1990; e.g. `danish` in the R package
   `evir`). The raw data file is not committed; `figures/danish.csv` holds the per-threshold estimates.
   Reproduce with `python3 empirical.py danish.csv Loss figures/danish && python3 make_tables.py`.
+* `empirical_risk.py` – expected shortfall and excess-of-loss layer premiums by threshold and
+  method, with 95% profile-likelihood intervals (Section 8.1):
+  `python3 empirical_risk.py danish.csv Loss 11` (11 = years of data, for the claim frequency).
+* `../sim/riskmeasures.py` – closed-form stop-loss transforms, ES and layer premiums for the
+  Exp+Erlang, GPD and Pareto tails; profile-likelihood intervals for any of them
+  (`check` verifies the closed forms; `coverage` runs the interval coverage study).
 * `../sim/fisher_B.py` – closed-form Fisher information for the Exp+Erlang sub-model
   (`check`, `table`, `coverage` sub-commands).
 

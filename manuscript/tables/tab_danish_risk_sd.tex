@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Danish fire losses: standard deviation of each risk-measure estimate across the thresholds of Figure~\ref{fig:danishrisk}, by threshold window (smallest in bold).}
+\label{tab:danishrisksd}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+ & \multicolumn{3}{c}{all ($k=22$--$1084$)} & \multicolumn{3}{c}{$k=50$--$200$} & \multicolumn{3}{c}{$k=200$--$1084$} \\
+\cmidrule(lr){2-4} \cmidrule(lr){5-7} \cmidrule(lr){8-10}
+Quantity & Hill & GPD & E+E & Hill & GPD & E+E & Hill & GPD & E+E \\
+\midrule
+$\mathrm{ES}_{0.995}$ & 39.71 & 27.01 & \textbf{20.27} & 43.06 & \textbf{4.80} & 7.53 & 14.48 & 17.10 & \textbf{7.75} \\
+$\mathrm{ES}_{0.999}$ & 157.58 & 118.54 & \textbf{78.41} & 173.58 & \textbf{23.96} & 26.81 & 56.70 & 71.43 & \textbf{32.48} \\
+Layer 30 xs 20 & 3.96 & 2.34 & \textbf{1.75} & 4.08 & 1.37 & \textbf{1.29} & 2.36 & 1.22 & \textbf{0.90} \\
+Layer 50 xs 50 & 5.42 & 3.59 & \textbf{3.48} & 5.36 & \textbf{0.33} & 1.84 & 1.90 & 1.78 & \textbf{0.89} \\
+Layer 100 xs 100 & 5.60 & 3.91 & \textbf{3.67} & 5.68 & \textbf{0.98} & 1.71 & 1.83 & 2.11 & \textbf{1.01} \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\parbox{\linewidth}{\footnotesize Layers are evaluated only at thresholds below the retention.}
+\end{table}
