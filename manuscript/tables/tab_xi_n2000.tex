@@ -1,0 +1,23 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{RMSE of $\hat\xi$ over the threshold grid $k\in\{50,\dots,1000\}$, $n=2000$, $R=500$.}
+\label{tab:xi2000}
+\begin{tabular}{llrrrrrrrr}
+\toprule
+ & & \multicolumn{4}{c}{Best $k$} & \multicolumn{4}{c}{Worst $k$} \\
+\cmidrule(lr){3-6} \cmidrule(lr){7-10}
+DGP & $\rho$ & Hill & GPD & E+E & AIC & Hill & GPD & E+E & AIC \\
+\midrule
+PH$_2$-Erlang & $0$ & 0.100 & 0.073 & \textbf{0.039} & 0.055 & 0.160 & 0.702 & \textbf{0.116} & 0.249 \\
+Loggamma & $0$ & 0.066 & 0.051 & \textbf{0.050} & 0.185 & \textbf{0.103} & 0.733 & 0.124 & 0.259 \\
+Burr & $-0.5$ & 0.260 & 0.187 & \textbf{0.123} & 0.147 & 1.286 & 0.544 & \textbf{0.506} & \textbf{0.506} \\
+Two-Pareto & $-0.5$ & \textbf{0.066} & 0.071 & 0.095 & 0.219 & \textbf{0.082} & 0.729 & 0.149 & 0.285 \\
+GPD & $-1$ & 0.088 & 0.044 & \textbf{0.033} & \textbf{0.033} & 0.544 & 0.642 & \textbf{0.128} & 0.278 \\
+Fr\'echet & $-2$ & \textbf{0.037} & 0.066 & 0.082 & 0.081 & \textbf{0.091} & 0.671 & 0.134 & 0.239 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\parbox{\linewidth}{\footnotesize E+E: PH$_2$ Exp+Erlang ($\rho=0$) sub-model; AIC: PH$_2$ with the sub-family chosen by AIC. ``Best'' is the smallest RMSE over the threshold grid (oracle threshold); ``worst'' is the largest RMSE over the grid, a measure of sensitivity to the threshold choice. The smallest value in each row and block is in bold.}
+\end{table}

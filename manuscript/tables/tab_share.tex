@@ -1,0 +1,26 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Proportion of samples in which the $\rho=0$ (Exp+Erlang) sub-family is selected over the two-exponential sub-family ($\rho<0$).}
+\label{tab:share}
+\begin{tabular}{llrrrrrrrrrrrr}
+\toprule
+ & & \multicolumn{6}{c}{$n=2000$, $k=$} & \multicolumn{6}{c}{$n=10\,000$, $k=$} \\
+\cmidrule(lr){3-8} \cmidrule(lr){9-14}
+ & & \multicolumn{3}{c}{AIC} & \multicolumn{3}{c}{BIC} & \multicolumn{3}{c}{AIC} & \multicolumn{3}{c}{BIC} \\
+\cmidrule(lr){3-5} \cmidrule(lr){6-8} \cmidrule(lr){9-11} \cmidrule(lr){12-14}
+DGP & $\rho$ & 100 & 400 & 1000 & 100 & 400 & 1000 & 500 & 2000 & 5000 & 500 & 2000 & 5000 \\
+\midrule
+PH$_2$-Erlang & $0$ & 0.79 & 0.84 & 0.89 & 0.97 & 0.98 & 0.99 & 0.78 & 0.88 & 0.92 & 0.99 & 1.00 & 1.00 \\
+Loggamma & $0$ & 0.76 & 0.79 & 0.83 & 0.95 & 0.98 & 1.00 & 0.75 & 0.82 & 0.87 & 0.98 & 0.99 & 1.00 \\
+Burr & $-0.5$ & 0.90 & 1.00 & 1.00 & 0.98 & 1.00 & 1.00 & 0.97 & 1.00 & 1.00 & 1.00 & 1.00 & 1.00 \\
+Two-Pareto & $-0.5$ & 0.72 & 0.62 & 0.61 & 0.94 & 0.94 & 0.97 & 0.60 & 0.60 & 0.50 & 0.95 & 0.96 & 0.96 \\
+GPD & $-1$ & 0.83 & 0.98 & 1.00 & 0.97 & 1.00 & 1.00 & 0.87 & 0.99 & 1.00 & 0.99 & 1.00 & 1.00 \\
+GPD, $\mu=5$ & $-1$ & -- & -- & -- & -- & -- & -- & 0.30 & 0.00 & 0.00 & 0.78 & 0.01 & 0.00 \\
+Fr\'echet & $-2$ & 0.74 & 0.79 & 0.85 & 0.96 & 0.98 & 0.99 & 0.71 & 0.82 & 0.67 & 0.96 & 0.99 & 0.97 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\parbox{\linewidth}{\footnotesize The GPD with location $\mu=5$ was included only in the $n=10\,000$ study. Fits are on the unshifted log-excesses.}
+\end{table}

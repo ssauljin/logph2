@@ -1,0 +1,24 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{RMSE of $\log(\widehat{\mathrm{VaR}}_{0.9999}/\mathrm{VaR}_{0.9999})$ over $k\in\{250,\dots,5000\}$, $n=10\,000$, $R=500$.}
+\label{tab:q10000}
+\begin{tabular}{llrrrrrrrrrr}
+\toprule
+ & & \multicolumn{5}{c}{Best $k$} & \multicolumn{5}{c}{Worst $k$} \\
+\cmidrule(lr){3-7} \cmidrule(lr){8-12}
+DGP & $\rho$ & Hill & GPD & E+E & E+E$_s$ & AIC & Hill & GPD & E+E & E+E$_s$ & AIC \\
+\midrule
+PH$_2$-Erlang & $0$ & 0.213 & 0.144 & \textbf{0.113} & 0.179 & 0.145 & 0.651 & 0.322 & \textbf{0.245} & 0.842 & 0.329 \\
+Loggamma & $0$ & 0.162 & 0.127 & \textbf{0.123} & 0.154 & 0.136 & 0.459 & 0.321 & \textbf{0.245} & 0.673 & 0.302 \\
+Burr & $-0.5$ & 0.557 & 0.316 & \textbf{0.287} & \textbf{0.287} & 0.304 & 3.000 & \textbf{1.790} & 2.982 & 2.982 & 2.982 \\
+Two-Pareto & $-0.5$ & \textbf{0.140} & 0.143 & 0.179 & 0.155 & 0.283 & \textbf{0.173} & 0.296 & 0.231 & 1.017 & 0.313 \\
+GPD & $-1$ & 0.242 & \textbf{0.123} & 0.166 & 0.166 & 0.176 & 3.000 & \textbf{0.310} & 1.000 & 1.000 & 1.000 \\
+GPD, $\mu=5$ & $-1$ & 0.239 & \textbf{0.122} & 0.268 & 0.168 & 0.238 & 0.996 & \textbf{0.301} & 0.996 & 0.981 & 0.344 \\
+Fr\'echet & $-2$ & 0.129 & 0.178 & 0.171 & \textbf{0.089} & 0.174 & 0.597 & 0.308 & 0.233 & \textbf{0.231} & 0.299 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\parbox{\linewidth}{\footnotesize Log-ratio errors are truncated at $\pm 3$. See Table~\ref{tab:xi10000}.}
+\end{table}

@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Danish fire losses: tail index and VaR estimates at selected thresholds ($n=2167$, losses in millions of DKK).}
+\label{tab:danish}
+\begin{tabular}{rrrrlrrrrrrr}
+\toprule
+ & & \multicolumn{4}{c}{$\hat\xi$} & \multicolumn{3}{c}{$\widehat{\mathrm{VaR}}_{0.995}$} & \multicolumn{3}{c}{$\widehat{\mathrm{VaR}}_{0.999}$} \\
+\cmidrule(lr){3-6} \cmidrule(lr){7-9} \cmidrule(lr){10-12}
+$k$ & $u$ & Hill & GPD & E+E (95\% profile CI) & $\hat p$ & Hill & GPD & E+E & Hill & GPD & E+E \\
+\midrule
+56 & 15.93 & 0.544 & 0.601 & 0.544 (0.308, 0.716) & 0.00 & 38.9 & 38.9 & 38.9 & 93.5 & 98.4 & 93.6 \\
+109 & 9.88 & 0.631 & 0.477 & 0.428 (0.337, 0.730) & 0.48 & 42.4 & 40.3 & 39.5 & 117.2 & 93.0 & 89.7 \\
+246 & 5.11 & 0.708 & 0.625 & 0.571 (0.461, 0.795) & 0.24 & 46.6 & 43.0 & 43.9 & 145.5 & 119.8 & 123.6 \\
+482 & 3.21 & 0.704 & 0.660 & 0.586 (0.483, 0.766) & 0.20 & 46.6 & 43.5 & 43.2 & 144.6 & 126.7 & 122.8 \\
+1084 & 1.77 & 0.717 & 0.701 & 0.630 (0.538, 0.759) & 0.14 & 48.2 & 46.5 & 45.3 & 153.0 & 143.8 & 135.6 \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\parbox{\linewidth}{\footnotesize Empirical quantiles: 99.5\%: 34.8; 99.9\%: 131.6. $\hat p$ is the fitted Erlang weight of the E+E model; $\hat p\approx 0$ means that E+E coincides with the Hill estimator.}
+\end{table}
