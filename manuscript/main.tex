@@ -375,7 +375,7 @@ The AIC-selected PH$_2$ fit is clearly worse than E+E alone for most DGPs; Secti
 \label{fig:bias2000}
 \end{figure}
 
-\subsection{High quantiles}
+\subsection{High quantiles}\label{sec:simq}
 
 Table~\ref{tab:q2000} and Figure~\ref{fig:q2000} report the accuracy of $\widehat{\VaR}_{0.9995}$ for $n=2000$. The differences are smaller than for $\hat\xi$, since all methods estimate the quantile from the same exceedances. E+E has a lower quantile RMSE than GPD at every $k\le400$ for five of the six DGPs; for Burr it does so only up to $k=200$ (see \texttt{sim/summary\_by\_k.csv}). The Weissman--Hill quantile is best for the near-Pareto Two-Pareto and Fr\'echet tails at moderate $k$, but it deteriorates sharply at large $k$ under GPD and Burr tails. Under the GPD and Burr DGPs all log-scale methods, E+E included, deteriorate once $k$ exceeds roughly 15--30\% of the sample: there $\log(Y/u)$ is dominated by observations near zero, outside the tail regime. The GPD fit on the original scale is unaffected by this.
 
@@ -420,7 +420,7 @@ Table~\ref{tab:cov} reports the coverage of nominal 95\% intervals for $\xi$ whe
 
 \subsection{Coverage of interval estimates for risk measures}\label{sec:coveragerisk}
 
-\todo{COVRISK}
+Table~\ref{tab:covrisk} reports the coverage of the 95\% profile-likelihood intervals of Section~\ref{sec:riskci} for $\VaR_{0.995}$ and $\mathrm{ES}_{0.995}$, for $n=2000$, $R=300$ and three DGPs. The true expected shortfall is computed from the true survival function. For PH$_2$-Erlang this is the closed form \eqref{eq:es} with $u=1$; for Loggamma it requires numerical integration. The E+E intervals attain coverage between $0.92$ and $0.97$ in eleven of the twelve settings. The exception is the GPD DGP at $k=500$ ($0.857$ for expected shortfall), where the log-scale fit is entering the region in which it breaks down (Section~\ref{sec:simq}). The GPD intervals also have close to nominal coverage, between $0.92$ and $0.96$. For expected shortfall, however, their median width is considerably larger than that of the E+E intervals: $140$ against $75$ under PH$_2$-Erlang at $k=200$, and $102$ against $52$ under Loggamma. The intervals based on the Pareto (Hill) tail are short but increasingly biased as $k$ grows. Their coverage for expected shortfall falls to $0.66$ under PH$_2$-Erlang and to zero under the GPD DGP at $k=500$. Under the conditions for which it was designed, the E+E tail therefore delivers risk-measure intervals that are both close to nominal and substantially shorter than the GPD intervals, especially for expected shortfall, which depends most on the extrapolation.
 
 \IfFileExists{tables/tab_cov_risk.tex}{\input{tables/tab_cov_risk}}{}
 
