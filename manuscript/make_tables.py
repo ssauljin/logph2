@@ -276,3 +276,114 @@ def danish_tables():
 
 danish_tables()
 print("danish tables:", [f for f in os.listdir(OUT) if "danish" in f])
+
+
+# ---- Danish fire losses: risk measures and XL layers (from empirical_risk.py) --------------
+MEAS = [("ES995", r"$\mathrm{ES}_{0.995}$"), ("ES999", r"$\mathrm{ES}_{0.999}$"),
+        ("30 xs 20", r"Layer 30 xs 20"), ("50 xs 50", r"Layer 50 xs 50"),
+        ("100 xs 100", r"Layer 100 xs 100")]
+RMETH = [("Hill", "Hill"), ("GPD", "GPD"), ("E+E", "E+E")]
+
+
+def danish_risk_tables():
+    p_ci = os.path.join(HERE, "figures", "danish_risk_ci.csv")
+    p_all = os.path.join(HERE, "figures", "danish_risk.csv")
+    p_bc = os.path.join(HERE, "figures", "danish_risk_burning_cost.csv")
+    if not (os.path.exists(p_ci) and os.path.exists(p_all)):
+        return
+    ci = pd.read_csv(p_ci)
+    allk = pd.read_csv(p_all)
+    bc = pd.read_csv(p_bc, index_col=0).iloc[:, 0] if os.path.exists(p_bc) else None
+    ks = sorted(ci.k.unique())
+    us = {k: ci[ci.k == k].u.iloc[0] for k in ks}
+    lines = [r"\begin{table}[t]", r"\centering", r"\footnotesize", r"\setlength{\tabcolsep}{4pt}",
+             r"\caption{Danish fire losses: expected shortfall and expected annual loss in three "
+             r"excess-of-loss layers (millions of DKK), with 95\% profile-likelihood intervals, at three "
+             r"thresholds.}", r"\label{tab:danishrisk}",
+             r"\begin{tabular}{ll" + "r" * len(ks) + "}", r"\toprule",
+             r"Quantity & Method & " + " & ".join(rf"$k={k}$ ($u={us[k]:.1f}$)" for k in ks) + r" \\",
+             r"\midrule"]
+    for key, lab in MEAS:
+        for j, (mm, ml) in enumerate(RMETH):
+            cells = []
+            for k in ks:
+                r = ci[(ci.k == k) & (ci.method == mm) & (ci.measure == key)]
+                if r.empty:
+                    cells.append("--")
+                    continue
+                r = r.iloc[0]
+                f = "{:.1f}" if key.startswith("ES") else "{:.2f}"
+                hi = r"\infty" if not np.isfinite(r.hi) else f.format(r.hi)
+                cells.append(f"{f.format(r.est)} ({f.format(r.lo)}, ${hi}$)" if hi == r"\infty"
+                             else f"{f.format(r.est)} ({f.format(r.lo)}, {hi})")
+            first = lab if j == 0 else ""
+            if j == 0 and bc is not None and key in bc.index:
+                first = lab + rf" [{bc[key]:.1f}]"
+            lines.append(" & ".join([first, ml] + cells) + r" \\")
+        if key != MEAS[-1][0]:
+            lines.append(r"\addlinespace")
+    lines += [r"\bottomrule", r"\end{tabular}", r"\par\smallskip",
+              r"\parbox{\linewidth}{\footnotesize Layer entries are expected annual losses, i.e.\ the "
+              r"expected loss per claim in the layer times the observed claim frequency "
+              r"($2167/11\approx197$ claims per year); the empirical burning cost per year is shown in "
+              r"square brackets. Intervals are conditional on the threshold and on the exceedance "
+              r"proportion $k/n$.}", r"\end{table}"]
+    open(os.path.join(OUT, "tab_danish_risk.tex"), "w").write("\n".join(lines) + "\n")
+
+    kmin, kmax = int(allk.k.min()), int(allk.k.max())
+    wins = [(kmin, kmax, rf"all ($k={kmin}$--${kmax}$)"), (50, 200, r"$k=50$--$200$"),
+            (200, kmax, rf"$k=200$--${kmax}$")]
+    lines = [r"\begin{table}[t]", r"\centering", r"\footnotesize", r"\setlength{\tabcolsep}{4pt}",
+             r"\caption{Danish fire losses: standard deviation of each risk-measure estimate across the "
+             r"thresholds of Figure~\ref{fig:danishrisk}, by threshold window (smallest in bold).}",
+             r"\label{tab:danishrisksd}",
+             r"\begin{tabular}{l" + "rrr" * len(wins) + "}", r"\toprule",
+             " & " + " & ".join(rf"\multicolumn{{3}}{{c}}{{{w[2]}}}" for w in wins) + r" \\",
+             " ".join(rf"\cmidrule(lr){{{2 + 3 * i}-{4 + 3 * i}}}" for i in range(len(wins))),
+             "Quantity & " + " & ".join([m for _, m in RMETH] * len(wins)) + r" \\", r"\midrule"]
+    for key, lab in MEAS:
+        row = [lab]
+        for lo, hi, _ in wins:
+            w = allk[(allk.k >= lo) & (allk.k <= hi)]
+            sds = [w[w.method == mm][key].std() for mm, _ in RMETH]
+            best = min(round(v, 2) for v in sds)
+            row += [rf"\textbf{{{v:.2f}}}" if round(v, 2) == best else f"{v:.2f}" for v in sds]
+        lines.append(" & ".join(row) + r" \\")
+    lines += [r"\bottomrule", r"\end{tabular}", r"\par\smallskip",
+              r"\parbox{\linewidth}{\footnotesize Layers are evaluated only at thresholds below the "
+              r"retention.}", r"\end{table}"]
+    open(os.path.join(OUT, "tab_danish_risk_sd.tex"), "w").write("\n".join(lines) + "\n")
+
+
+def cov_risk_table():
+    path = os.path.join(SIM, "coverage_riskmeasures.txt")
+    if not os.path.exists(path):
+        return
+    rx = re.compile(r"^(\S+)\s+(\d+)\s+(VaR|ES)\s+([\d.]+)\s+([\d.]+) \[\s*([\d.inf]+)\]\s+"
+                    r"([\d.]+) \[\s*([\d.inf]+)\]\s+([\d.]+) \[\s*([\d.inf]+)\]")
+    rows = [m.groups() for m in map(rx.match, open(path)) if m]
+    if not rows:
+        return
+    lines = [r"\begin{table}[t]", r"\centering", r"\footnotesize", r"\setlength{\tabcolsep}{4pt}",
+             r"\caption{Empirical coverage (median width) of 95\% profile-likelihood intervals for "
+             r"$\mathrm{VaR}_{0.995}$ and $\mathrm{ES}_{0.995}$, $n=2000$, $R=300$.}", r"\label{tab:covrisk}",
+             r"\begin{tabular}{lrlrlll}", r"\toprule",
+             r"DGP & $k$ & Measure & True value & Hill & GPD & E+E \\", r"\midrule"]
+    last = None
+    for d, k, me, tv, cH, wH, cG, wG, cE, wE in rows:
+        if last is not None and d != last:
+            lines.append(r"\midrule")
+        fw = lambda w: r"$\infty$" if "inf" in w else f"{float(w):.1f}"
+        lines.append(" & ".join([DGP_LABEL[d] if d != last else "", k,
+                                 r"$\mathrm{VaR}_{0.995}$" if me == "VaR" else r"$\mathrm{ES}_{0.995}$",
+                                 f"{float(tv):.2f}",
+                                 f"{float(cH):.3f} ({fw(wH)})", f"{float(cG):.3f} ({fw(wG)})",
+                                 f"{float(cE):.3f} ({fw(wE)})"]) + r" \\")
+        last = d
+    lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
+    open(os.path.join(OUT, "tab_cov_risk.tex"), "w").write("\n".join(lines) + "\n")
+
+
+danish_risk_tables()
+cov_risk_table()
+print("risk tables:", sorted(f for f in os.listdir(OUT) if "risk" in f))

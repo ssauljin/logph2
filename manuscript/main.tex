@@ -1,8 +1,10 @@
-% Submission layout following the Taylor & Francis manuscript layout guide
-% (Scandinavian Actuarial Journal): Times 12 pt, double spacing, line numbers,
-% margins >= 2.5 cm, author-date references, statements before the references.
+% Submission layout for Stochastic Models (Taylor & Francis), following its Instructions to
+% Authors: double spacing, margins of at least one inch, numbered pages, running head of at
+% most 50 characters, abstract of at most 100 words without abbreviations or references,
+% references in alphabetical order cited by author and number (built by make_bib.py),
+% tables and figures embedded in the text with table titles above the tables.
 \documentclass[12pt]{article}
-\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[letterpaper,margin=1in,headheight=15pt]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{mathptmx}
 \usepackage{setspace}
@@ -11,13 +13,20 @@
 \usepackage{titlesec}
 \usepackage{authblk}
 \usepackage{amsmath,amssymb,amsthm}
-\usepackage{natbib}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage[section]{placeins}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
-\bibpunct{(}{)}{;}{a}{,}{,}
+\newcommand{\runninghead}{Log phase-type tails and tail index estimation}% 46 characters
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\itshape\runninghead}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{proposition}[theorem]{Proposition}
@@ -58,18 +67,22 @@
 \linenumbers
 
 \begin{abstract}
-\noindent Tail index estimates from the Hill estimator or from a generalised Pareto (GPD) fit to exceedances are notoriously sensitive to the threshold, because both ignore the second-order behaviour of the tail. Building on the eigenvalue plot of \citet{KimKim2015}, which fits a two-phase phase-type (PH$_2$) distribution to log-excesses, we show that a log-excess is PH$_2$ if and only if the loss tail is a signed two-Pareto mixture or a Pareto--log-gamma mixture, and that these tails are second-order regularly varying with $\rho<0$ and $\rho=0$, respectively. For the Pareto--log-gamma (Exp+Erlang) sub-model we derive the Fisher information in closed form; it is singular at the Pareto boundary, where the variance of the tail index estimator grows like $\xi^2/(4p^2)$ in the Erlang weight $p$. A simulation study with seven tail models shows that the Exp+Erlang sub-model gives the most threshold-robust tail index and high-quantile estimates in most settings, with profile-likelihood intervals close to nominal coverage where the fit is unbiased, while the Hill estimator remains preferable for nearly Pareto tails. The two-exponential sub-family is weakly identified, and $\rho$ cannot be recovered from the fit. For the Danish fire losses, the Exp+Erlang fit gives the most stable Value-at-Risk estimates across thresholds and reduces to the Hill estimator in the extreme tail.
+\noindent Tail index estimates from the Hill estimator or a generalised Pareto fit depend strongly on the threshold, because both ignore second-order tail behaviour. We show that a log-excess has a two-phase phase-type distribution exactly when the tail is a signed mixture of two Pareto tails or a Pareto--log-gamma mixture, and that these tails are second-order regularly varying with negative and zero second-order parameter, respectively. For the Pareto--log-gamma model we derive the Fisher information, which is singular at the Pareto boundary, and closed-form expected shortfall and reinsurance layer premiums. Simulations and Danish fire losses show much reduced threshold sensitivity.
 \end{abstract}
 
-\noindent\textbf{Keywords:} Heavy tails; Hill estimator; phase-type distribution; second-order regular variation; threshold selection; Value-at-Risk
+\noindent\textbf{Keywords:} Phase-type distribution; heavy tails; second-order regular variation; Hill estimator; threshold selection; expected shortfall
 
-\noindent\textbf{MSC 2020:} 62G32; 60E05; 62F12; 62P05
+\noindent\textbf{MSC 2020:} 60E05; 62G32; 62F12; 62P05
+
+\noindent\textbf{Running head:} \runninghead
 
 \section{Introduction}\label{sec:intro}
 
 Estimating the tail index of a heavy-tailed loss distribution is a routine but delicate task in insurance and finance. Its value determines which moments of the loss exist, and it drives the extrapolation behind high quantiles such as Value-at-Risk (VaR) and tail expectations. The two standard tools are the Hill estimator \citep{Hill1975} and maximum likelihood fitting of the generalised Pareto distribution (GPD) to the exceedances over a high threshold, the peaks-over-threshold (POT) method \citep{BalkemaDeHaan1974,Pickands1975,Smith1987,McNeil1997}. Both rely on the first-order approximation of the tail by a Pareto or GPD tail above the threshold, and both suffer from the same well-known difficulty: the estimate depends heavily on the threshold. A low threshold uses more data but incurs a bias from the part of the distribution where the first-order approximation is poor; a high threshold reduces this bias at the cost of a large variance \citep{Embrechts1997,Beirlant2004,ScarrottMacDonald2012}. The size of the bias is governed by the second-order behaviour of the tail, summarised by the second-order parameter $\rho\le 0$; when $\rho$ is close to zero the bias decays very slowly and no threshold gives a satisfactory trade-off \citep{Drees2000,DeHaanFerreira2006}.
 
 A large literature reduces this sensitivity by modelling the second-order term explicitly, for example through the exponential regression model of \citet{Beirlant1999}, the Pareto-departure model of \citet{FeuervergerHall1999}, or bias-reduced estimators that plug in an external estimate of $\rho$ \citep{FragaAlves2003,GomesGuillou2015}. These methods are semi-parametric and target an asymptotic expansion of the tail.
+
+For actuarial work the threshold problem is not only a statistical nuisance. Solvency capital at the 99.5\% level, expected shortfall and the pricing of high excess-of-loss reinsurance layers all depend on the fitted tail beyond the largest observations, and a threshold that is defensible on statistical grounds can still move these quantities substantially. The choice of threshold is therefore a source of model risk in capital and reinsurance calculations, and an estimator that is less sensitive to it, and that comes with honest uncertainty statements for the risk measures themselves, is of direct practical value.
 
 A different, fully parametric route was proposed by \citet{KimKim2015}, motivated by the log phase-type (LogPH) class of \citet{Ahn2012}. If a loss $Y$ has a regularly varying tail, the log-excess $\log(Y/u)$ over a threshold $u$ has an exponentially decaying distribution, and the Hill estimator is the exponential maximum likelihood estimator (MLE) for these log-excesses. \citet{KimKim2015} replaced the exponential by a phase-type distribution with two phases, PH$_2$, fitted by the EM algorithm of \citet{Asmussen1996}, and plotted the resulting tail index (the eigenvalue of the PH generator closest to zero) against the threshold. Their eigenvalue plot was markedly more stable than the Hill plot across the examples they considered. Two questions were left open: what PH$_2$ fitting implies for the second-order behaviour of the tail, and whether the gain in stability holds up in a systematic comparison that includes the GPD.
 
@@ -79,9 +92,10 @@ This paper answers both questions, and our conclusions are partly positive and p
 \item We show that both log-tails are second-order regularly varying, with $\rho=-\tau$ for 2E and $\rho=0$ for EE, and we give the auxiliary functions in closed form (Theorem~\ref{thm:2rv}). Hence log-PH$_2$ tails cover every $\rho\le 0$. We derive the exact bias of the Hill functional under each case and contrast it with the threshold invariance of the PH$_2$ rate parameters (Proposition~\ref{prop:hill}).
 \item For the EE sub-model, a two-parameter generalisation of the Hill model, we derive the Fisher information in closed form via the exponential integral (Proposition~\ref{prop:fisher}). We show that it is singular at the Pareto boundary $p=0$, with $\det I=4p^2/\mu^2+O(p^3)$, so that the variance of the tail index estimator grows like $\xi^2/(4p^2)$ (Proposition~\ref{prop:singular}). This explains both the cost of the extra flexibility near an exact Pareto tail and the difficulty of identifying $\rho$, and it motivates profile-likelihood intervals.
 \item In a simulation study with seven tail models, two sample sizes and 500 replications, we compare Hill, GPD and several PH$_2$ variants over a wide range of thresholds (Section~\ref{sec:sim}). The EE sub-model gives the flattest error curves across thresholds and the smallest best-threshold error for most models, while the Hill estimator remains best for tails close to an exact Pareto. The 2E sub-family degrades accuracy when selected, and information criteria do not recover the second-order case.
+\item For actuarial use we give closed-form stop-loss transforms, mean excess functions, expected shortfall and excess-of-loss layer premiums under the EE tail, and profile-likelihood intervals for these quantities (Section~\ref{sec:risk}). Applied to the Danish fire losses, the EE fit gives the most threshold-stable expected shortfall and layer premiums of the three methods, and its intervals for expected shortfall are narrower than those of the GPD (Section~\ref{sec:data}). The fitted Erlang weight also gives a practical diagnostic for when the classical Pareto (Hill) tail is adequate.
 \end{enumerate}
 
-The paper is organised as follows. Section~\ref{sec:background} reviews regular variation, the Hill and POT approaches and phase-type distributions. Section~\ref{sec:ph2} characterises PH$_2$ and the corresponding log-tails, and Section~\ref{sec:2rv} studies their second-order behaviour. Section~\ref{sec:inference} develops likelihood inference for the EE sub-model. Section~\ref{sec:sim} reports the simulation study and Section~\ref{sec:data} an empirical illustration. Section~\ref{sec:discussion} gives practical recommendations and discusses limitations. Proofs are collected in Appendix~\ref{app:proofs}.
+The paper is organised as follows. Section~\ref{sec:background} reviews regular variation, the Hill and POT approaches and phase-type distributions. Section~\ref{sec:ph2} characterises PH$_2$ and the corresponding log-tails, and Section~\ref{sec:2rv} studies their second-order behaviour. Section~\ref{sec:inference} develops likelihood inference for the EE sub-model, and Section~\ref{sec:risk} derives tail risk measures and reinsurance layer premiums with interval estimates. Section~\ref{sec:sim} reports the simulation study and Section~\ref{sec:data} an empirical illustration. Section~\ref{sec:discussion} gives practical recommendations and discusses limitations. Proofs are collected in Appendix~\ref{app:proofs}.
 
 \section{Background}\label{sec:background}
 
@@ -276,6 +290,50 @@ in which the inner maximisation includes the boundary $p=0$. Its coverage is exa
 
 The 2E sub-family is less regular still. At $w=0$ the parameter $\tau$ is not identified, and as $\tau\downarrow0$ with $w\tau$ fixed the model collapses onto EE (Remark~\ref{rem:limit}). Selecting between EE and 2E by AIC \citep{Akaike1974} or BIC \citep{Schwarz1978} is therefore a non-regular comparison: the selection probabilities have no simple relation to the true value of $\rho$, and fitted values of $\tau$ need not estimate $-\rho$. Section~\ref{sec:rhoid} confirms this empirically.
 
+\section{Tail risk measures and reinsurance layers}\label{sec:risk}
+
+Once the tail beyond a threshold $u$ has been fitted, the quantities an actuary needs follow from its survival function. We write them for a threshold $u=Y_{n-k:n}$ with exceedance proportion $\pi_u=k/n$, and for retentions $d\ge u$, so that only the fitted tail is involved. Lower retentions require a model for the body of the distribution, for example through splicing \citep{Reynkens2017}.
+
+\subsection{Closed forms}
+
+\begin{proposition}\label{prop:risk}
+Suppose that $\Pr(Y>y\mid Y>u)=(y/u)^{-\mu}\{1+p\mu\log(y/u)\}$ for $y\ge u$, with $\mu>1$ and $0\le p\le1$ (the EE tail \eqref{eq:tailEE}). For $d\ge u$ write $a=d/u$. Then:
+\begin{enumerate}
+\item[(a)] the stop-loss transform is
+\begin{equation}\label{eq:stoploss}
+\Pi_u(d):=\E[(Y-d)_+\mid Y>u]=\frac{u\,a^{1-\mu}}{\mu-1}\Big\{1+p\mu\Big(\log a+\frac1{\mu-1}\Big)\Big\};
+\end{equation}
+\item[(b)] the mean excess function is
+\begin{equation}\label{eq:meanexcess}
+e(d)=\E[Y-d\mid Y>d]=\frac{d}{\mu-1}\Big\{1+\frac{p\mu}{(\mu-1)(1+p\mu\log a)}\Big\};
+\end{equation}
+\item[(c)] for $q$ with $1-q<\pi_u$, the Value-at-Risk $v_q=\VaR_q(Y)$ solves
+\[
+(v_q/u)^{-\mu}\{1+p\mu\log(v_q/u)\}=(1-q)/\pi_u ,
+\]
+and the expected shortfall is
+\begin{equation}\label{eq:es}
+\mathrm{ES}_q(Y)=v_q+\frac{\pi_u}{1-q}\,\Pi_u(v_q);
+\end{equation}
+\item[(d)] the expected loss per claim in the layer $L$ xs $d$ is $\E[\min\{(Y-d)_+,L\}]=\pi_u\{\Pi_u(d)-\Pi_u(d+L)\}$.
+\end{enumerate}
+For $\mu\le1$ the quantities in (a), (b) and the expected shortfall are infinite, while VaR and layer premiums remain finite.
+\end{proposition}
+
+The corresponding expressions for the Pareto tail of the Hill model are the case $p=0$, $\Pi_u(d)=u\,a^{1-\alpha}/(\alpha-1)$. For the GPD fitted to $Y-u$ they are $\Pi_u(d)=(\sigma+\xi c)(1-\xi)^{-1}(1+\xi c/\sigma)^{-1/\xi}$ with $c=d-u$ and $\xi<1$. All three models therefore give closed-form expected shortfall and layer premiums. They differ in how they extrapolate beyond the data, which is exactly where the threshold choice enters.
+
+\begin{remark}[Mean excess and the second-order term]\label{rem:me}
+By \eqref{eq:meanexcess}, $e(d)/d\to1/(\mu-1)=\xi/(1-\xi)$ as $d\to\infty$, the slope of the linear mean excess function of a GPD with shape $\xi$. The approach to this slope is governed by the factor $\{1+p\mu\log(d/u)\}^{-1}$, so it is only logarithmic. This is the $\rho=0$ behaviour of Theorem~\ref{thm:2rv} seen through the mean excess plot. A GPD fitted at a moderate threshold reads the slope from a region where the factor is still far from one, which is why GPD-based layer premiums for an EE-type tail depend strongly on the threshold.
+\end{remark}
+
+\subsection{Interval estimates for risk measures}\label{sec:riskci}
+
+Each quantity in Proposition~\ref{prop:risk} is a strictly decreasing function of the tail rate $\mu$ for fixed $p$. This follows because $\partial_\mu S(x)=-x\,e^{-\mu x}(1-p+p\mu x)<0$ for the log-excess survival function $S$ of \eqref{eq:EE}, so every quantile and every integral of $S$ decreases in $\mu$. Similarly, the GPD quantities are increasing in $\sigma$ for fixed $\xi$, and the Pareto quantities are decreasing in $\alpha$. For a risk measure $g$ with estimate $\hat g=g(\hat\mu,\hat p)$, the profile log-likelihood
+\[
+\ell^*(v)=\max_{0\le p\le1}\ \ell\big(\mu_v(p),p\big),\qquad g\big(\mu_v(p),p\big)=v,
+\]
+is therefore computed by solving a monotone equation for $\mu_v(p)$ and maximising over the single parameter $p$. The 95\% interval is $\{v:2[\ell(\hat\mu,\hat p)-\ell^*(v)]\le\chi^2_{1,0.95}\}$, the analogue of \eqref{eq:profile}. As in the usual profile-likelihood intervals for POT return levels \citep{Coles2001}, the intervals are conditional on the threshold and on $\pi_u$. For expected shortfall the upper limit can be infinite when the data are compatible with $\mu\le1$. Section~\ref{sec:coveragerisk} examines the coverage of these intervals for VaR and expected shortfall, and Section~\ref{sec:datarisk} applies them to the Danish data.
+
 \section{Simulation study}\label{sec:sim}
 
 \subsection{Design}\label{sec:design}
@@ -328,7 +386,7 @@ The AIC-selected PH$_2$ fit is clearly worse than E+E alone for most DGPs; Secti
 \label{fig:bias2000}
 \end{figure}
 
-\subsection{High quantiles}
+\subsection{High quantiles}\label{sec:simq}
 
 Table~\ref{tab:q2000} and Figure~\ref{fig:q2000} report the accuracy of $\widehat{\VaR}_{0.9995}$ for $n=2000$. The differences are smaller than for $\hat\xi$, since all methods estimate the quantile from the same exceedances. E+E has a lower quantile RMSE than GPD at every $k\le400$ for five of the six DGPs; for Burr it does so only up to $k=200$ (see \texttt{sim/summary\_by\_k.csv}). The Weissman--Hill quantile is best for the near-Pareto Two-Pareto and Fr\'echet tails at moderate $k$, but it deteriorates sharply at large $k$ under GPD and Burr tails. Under the GPD and Burr DGPs all log-scale methods, E+E included, deteriorate once $k$ exceeds roughly 15--30\% of the sample: there $\log(Y/u)$ is dominated by observations near zero, outside the tail regime. The GPD fit on the original scale is unaffected by this.
 
@@ -371,6 +429,12 @@ Table~\ref{tab:cov} reports the coverage of nominal 95\% intervals for $\xi$ whe
 
 \IfFileExists{tables/tab_cov.tex}{\input{tables/tab_cov}}{\todo{Coverage table pending: run \texttt{sim/fisher\_B.py coverage} and \texttt{make\_tables.py}.}}
 
+\subsection{Coverage of interval estimates for risk measures}\label{sec:coveragerisk}
+
+Table~\ref{tab:covrisk} reports the coverage of the 95\% profile-likelihood intervals of Section~\ref{sec:riskci} for $\VaR_{0.995}$ and $\mathrm{ES}_{0.995}$, for $n=2000$, $R=300$ and three DGPs. The true expected shortfall is computed from the true survival function. For PH$_2$-Erlang this is the closed form \eqref{eq:es} with $u=1$; for Loggamma it requires numerical integration. The E+E intervals attain coverage between $0.92$ and $0.97$ in eleven of the twelve settings. The exception is the GPD DGP at $k=500$ ($0.857$ for expected shortfall), where the log-scale fit is entering the region in which it breaks down (Section~\ref{sec:simq}). The GPD intervals also have close to nominal coverage, between $0.92$ and $0.96$. For expected shortfall, however, their median width is considerably larger than that of the E+E intervals: $140$ against $75$ under PH$_2$-Erlang at $k=200$, and $102$ against $52$ under Loggamma. The intervals based on the Pareto (Hill) tail are short but increasingly biased as $k$ grows. Their coverage for expected shortfall falls to $0.66$ under PH$_2$-Erlang and to zero under the GPD DGP at $k=500$. Under the conditions for which it was designed, the E+E tail therefore delivers risk-measure intervals that are both close to nominal and substantially shorter than the GPD intervals, especially for expected shortfall, which depends most on the extrapolation.
+
+\IfFileExists{tables/tab_cov_risk.tex}{\input{tables/tab_cov_risk}}{}
+
 \section{Empirical illustration}\label{sec:data}
 
 We apply the methods to the Danish fire insurance losses analysed by \citet{McNeil1997} and \citet{Resnick1997}, among others: $n=2167$ losses from 1980--1990, in millions of Danish kroner. All losses exceed one million kroner, so the data are left-truncated at $1$. As the support of the underlying loss starts at zero, we follow \citet{KimKim2015} and do not apply the min-shift; all fits use the log-excesses $\log(Y/u)$. We compute the Hill, GPD and E+E estimates at 30 thresholds, with $k$ ranging from 22 to 1084 exceedances on a logarithmic grid ($u$ from about 26 down to 1.8), together with 95\% profile-likelihood intervals \eqref{eq:profile} for the E+E tail index. Figure~\ref{fig:danish} shows $\hat\xi$ and $\widehat{\VaR}_{0.995}$ against $k$. Table~\ref{tab:danish} gives the estimates at five thresholds, and Table~\ref{tab:danishsd} measures how much each estimate moves across thresholds within three windows.
@@ -391,6 +455,26 @@ Finally, AIC selects the EE sub-family at 29 of the 30 thresholds. The fitted 2E
 \input{tables/tab_danish}
 \input{tables/tab_danish_sd}
 
+\subsection{Expected shortfall and reinsurance layers}\label{sec:datarisk}
+
+The tail index is an intermediate quantity: what matters for capital and pricing is the tail beyond the data. Using Proposition~\ref{prop:risk} and its Pareto and GPD analogues, we compute $\mathrm{ES}_{0.995}$, $\mathrm{ES}_{0.999}$ and the expected annual loss in three excess-of-loss layers, 30 xs 20, 50 xs 50 and 100 xs 100 (millions of DKK). The layer premiums are obtained as the expected loss per claim in the layer times the observed claim frequency, $2167/11\approx197$ claims per year. A layer is evaluated only at thresholds below its retention. Figure~\ref{fig:danishrisk} shows the estimates against $k$, Table~\ref{tab:danishrisk} gives them with 95\% profile-likelihood intervals at $u\approx9.9$, $5.1$ and $3.2$, and Table~\ref{tab:danishrisksd} summarises their variation across thresholds.
+
+The Hill-based (Pareto) values exceed both the E+E and the GPD values at about two-thirds of the thresholds, for each of the five quantities. At $u\approx5.1$, for example, $\widehat{\mathrm{ES}}_{0.995}$ is $159$ under Hill, against $117$ under GPD and $119$ under E+E, and the expected annual loss in the 100 xs 100 layer is $20.2$, against $14.9$ and $15.7$. This mirrors the upward drift of the Hill estimate of $\xi$ in Figure~\ref{fig:danish}.
+
+Across all thresholds, the E+E estimates are the most stable of the three for every quantity in Table~\ref{tab:danishrisksd}. $\widehat{\mathrm{ES}}_{0.995}$ ranges from $76$ to $139$ under E+E, against $77$--$167$ under GPD and $80$--$203$ under Hill. The 100 xs 100 layer premium ranges from $7.0$ to $18.2$ under E+E, against $7.1$--$20.6$ and $7.9$--$24.7$. Below $u\approx6$ ($k\ge200$), the standard deviation of the E+E estimates across thresholds is about half that of the GPD for expected shortfall and the two upper layers, and three-quarters for the lowest layer. For the intermediate thresholds $50\le k\le200$ the GPD estimates of expected shortfall and of the two upper layers are the more stable ones, so neither method dominates everywhere. The E+E fit, however, is never the least stable, and its advantage is largest in the low-threshold region that uses most of the data.
+
+The profile-likelihood intervals show how uncertain high-layer pricing is from 2167 claims: the ratio of the upper to the lower limit of the interval for the 100 xs 100 layer ranges from about 3 to 14 across methods and thresholds. The E+E intervals for expected shortfall are nevertheless markedly shorter than those of the GPD. At $u\approx5.1$, the interval for $\mathrm{ES}_{0.995}$ is $(72,298)$ under E+E against $(63,476)$ under GPD, and for $\mathrm{ES}_{0.999}$ it is $(167,1069)$ against $(132,1939)$. The empirical burning costs per year are shown in Table~\ref{tab:danishrisk}. For the 30 xs 20 layer the burning cost lies inside every interval. For the 50 xs 50 layer it lies inside all E+E and GPD intervals but below the Hill intervals at $u\approx5.1$ and $3.2$, consistent with the Pareto tail overstating the upper layers at low thresholds. The burning cost of the top layer rests on only a few claims and cannot discriminate between the methods.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figures/danish_risk.png}
+\caption{Danish fire losses: $\mathrm{ES}_{0.995}$ and expected annual loss in three excess-of-loss layers (millions of DKK) against the number of exceedances $k$, for the Pareto (Hill), GPD and E+E tails. Horizontal lines: empirical burning cost per year.}
+\label{fig:danishrisk}
+\end{figure}
+
+\input{tables/tab_danish_risk}
+\input{tables/tab_danish_risk_sd}
+
 \section{Discussion and recommendations}\label{sec:discussion}
 
 The two-phase phase-type class fitted to log-excesses has a transparent structure. Its two sub-families correspond exactly to the two second-order regimes, $\rho=0$ and $\rho<0$, of a regularly varying tail, and the rate parameters are invariant to the threshold. These properties explain why a PH$_2$ fit can be much more stable across thresholds than the Hill estimator or a GPD fit.
@@ -403,7 +487,10 @@ For practitioners we suggest the following.
 \item If the E+E fit gives $\hat p$ close to zero over the stable region, the data are consistent with a nearly exact Pareto tail. The Hill estimator is then preferable because of its smaller variance (Proposition~\ref{prop:singular}).
 \item Apply the min-shift of \citet{KimKim2015} only when the support of the losses demonstrably starts away from zero.
 \item Do not interpret the PH$_2$ sub-family selected by AIC or BIC, or a fitted $\tau$, as an estimate of the second-order parameter. If $\rho$ is of interest, use a dedicated estimator \citep{FragaAlves2003,Goegebeur2010}.
+\item For capital and reinsurance work, report expected shortfall and layer premiums from the E+E tail together with their profile-likelihood intervals (Section~\ref{sec:riskci}), and compare them across thresholds and with the GPD and Pareto values. The spread across thresholds and methods is a direct measure of the model risk that the threshold choice introduces.
 \end{enumerate}
+
+From an actuarial point of view, the E+E tail is a convenient replacement for the Pareto or GPD tail in a spliced severity model \citep{Reynkens2017}. It keeps closed-form layer premiums and expected shortfall, adds one parameter that absorbs slowly decaying second-order behaviour, and reduces to the Pareto tail when that parameter is not needed.
 
 Several limitations should be noted. Our simulation covers one tail index ($\alpha=2$) and two sample sizes; tails heavier or lighter than this should be examined. The DGPs supported near zero (GPD, Burr) show that a log-scale method should not be pushed to thresholds in the body of the distribution. Finally, a formal test of $\rho=0$ against $\rho<0$ within the PH$_2$ family would require handling a boundary parameter, an unidentified nuisance parameter and a singular information matrix at once. A parametric bootstrap of the likelihood ratio is a natural candidate, which we leave for future work, together with extensions to inhomogeneous phase-type models \citep{AlbrecherBladt2019}.
 
@@ -417,10 +504,9 @@ No potential conflict of interest was reported by the author(s). \todo{Confirm.}
 \todo{Funding information, or delete this section if there was no funding.}
 
 \section*{Data availability statement}\label{sec:availability}
-The Danish fire insurance losses analysed in Section~\ref{sec:data} are publicly available, for example as the data set \texttt{danish} in the R package \texttt{evir}. All simulation code, raw per-sample estimates, summary tables and the scripts that produce every table and figure in this paper are available at \todo{repository URL or supplementary material}.
+The Danish fire insurance losses analysed in Section~\ref{sec:data} are publicly available, for example as the data set \texttt{danish} in the R package \texttt{evir}. All simulation code, raw per-sample estimates, summary tables, the risk-measure and interval code, and the scripts that produce every table and figure in this paper are available at \todo{repository URL or supplementary material}.
 
-\bibliographystyle{apalike}
-\bibliography{refs}
+\IfFileExists{references.tex}{\input{references}}{\todo{Run make\_bib.py to build the reference list.}}
 
 \appendix
 
@@ -468,6 +554,14 @@ Let $Z=\mu E$ and $D=1-p+pZ$. The density of $Z$ is $D\,e^{-z}$, $z>0$. Differen
 \partial_\mu^2\ell=-\mu^{-2}(1+p^2Z^2/D^2),\qquad \partial_\mu\partial_p\ell=\mu^{-1}Z/D^2,\qquad \partial_p^2\ell=-(Z-1)^2/D^2 .
 \]
 Since $D=p(a+Z)$, for any $g$ we have $\E[g(Z)/D^2]=p^{-1}\int_0^\infty g(z)e^{-z}(a+z)^{-1}dz$. Using $\int_0^\infty e^{-z}(a+z)^{-1}dz=J$, $\int_0^\infty ze^{-z}(a+z)^{-1}dz=1-aJ$ and $\int_0^\infty z^2e^{-z}(a+z)^{-1}dz=1-a+a^2J$, and noting $1+a=1/p$, we obtain \eqref{eq:fisher}. For $0<p<1$ the model is regular, and asymptotic normality of $(\hat\mu,\hat p)$ and the delta method for $\xi=1/\mu$ give the variance stated. Finally, $[I^{-1}]_{11}\mu^2$ depends on $p$ only, since $I_{11}\propto\mu^{-2}$, $I_{12}\propto\mu^{-1}$ and $I_{22}$ is free of $\mu$.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:risk}]
+(a) With $r=y/u$, $\Pi_u(d)=\int_d^\infty\Pr(Y>y\mid Y>u)\,dy=u\int_a^\infty r^{-\mu}(1+p\mu\log r)\,dr$. For $\mu>1$, $\int_a^\infty r^{-\mu}dr=a^{1-\mu}/(\mu-1)$, and integration by parts gives
+\[
+\int_a^\infty r^{-\mu}\log r\,dr=\frac{a^{1-\mu}\log a}{\mu-1}+\frac{a^{1-\mu}}{(\mu-1)^2},
+\]
+which yields \eqref{eq:stoploss}. (b) $e(d)=\Pi_u(d)/\Pr(Y>d\mid Y>u)$, and dividing \eqref{eq:stoploss} by $a^{-\mu}(1+p\mu\log a)$ gives \eqref{eq:meanexcess}. (c) Since $\Pr(Y>y)=\pi_u\Pr(Y>y\mid Y>u)$ for $y\ge u$, the VaR equation follows. Then $\mathrm{ES}_q=v_q+\E[(Y-v_q)_+]/(1-q)$ for a continuous distribution, and $\E[(Y-v_q)_+]=\pi_u\Pi_u(v_q)$. (d) $\E[\min\{(Y-d)_+,L\}]=\E[(Y-d)_+]-\E[(Y-d-L)_+]$, and both terms equal $\pi_u\Pi_u(\cdot)$ for retentions at or above $u$.
 \end{proof}
 
 \begin{proof}[Proof of Proposition~\ref{prop:singular}]
