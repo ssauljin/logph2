@@ -1,8 +1,10 @@
-% Submission layout following the Taylor & Francis manuscript layout guide
-% (Scandinavian Actuarial Journal): Times 12 pt, double spacing, line numbers,
-% margins >= 2.5 cm, author-date references, statements before the references.
+% Submission layout for Stochastic Models (Taylor & Francis), following its Instructions to
+% Authors: double spacing, margins of at least one inch, numbered pages, running head of at
+% most 50 characters, abstract of at most 100 words without abbreviations or references,
+% references in alphabetical order cited by author and number (built by make_bib.py),
+% tables and figures embedded in the text with table titles above the tables.
 \documentclass[12pt]{article}
-\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[letterpaper,margin=1in,headheight=15pt]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{mathptmx}
 \usepackage{setspace}
@@ -11,13 +13,20 @@
 \usepackage{titlesec}
 \usepackage{authblk}
 \usepackage{amsmath,amssymb,amsthm}
-\usepackage{natbib}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage[section]{placeins}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
-\bibpunct{(}{)}{;}{a}{,}{,}
+\newcommand{\runninghead}{Log phase-type tails and tail index estimation}% 46 characters
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\small\itshape\runninghead}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{proposition}[theorem]{Proposition}
@@ -58,12 +67,14 @@
 \linenumbers
 
 \begin{abstract}
-\noindent Tail index estimates from the Hill estimator or from a generalised Pareto (GPD) fit to exceedances are notoriously sensitive to the threshold, because both ignore the second-order behaviour of the tail. Building on the eigenvalue plot of \citet{KimKim2015}, which fits a two-phase phase-type (PH$_2$) distribution to log-excesses, we show that a log-excess is PH$_2$ if and only if the loss tail is a signed two-Pareto mixture or a Pareto--log-gamma mixture, and that these tails are second-order regularly varying with $\rho<0$ and $\rho=0$, respectively. For the Pareto--log-gamma (Exp+Erlang) sub-model we derive the Fisher information in closed form; it is singular at the Pareto boundary, where the variance of the tail index estimator grows like $\xi^2/(4p^2)$ in the Erlang weight $p$. A simulation study with seven tail models shows that the Exp+Erlang sub-model gives the most threshold-robust tail index and high-quantile estimates in most settings, with profile-likelihood intervals close to nominal coverage where the fit is unbiased, while the Hill estimator remains preferable for nearly Pareto tails. The two-exponential sub-family is weakly identified, and $\rho$ cannot be recovered. We give closed-form expected shortfall and excess-of-loss layer premiums for the Exp+Erlang tail, with profile-likelihood intervals. For the Danish fire losses, the Exp+Erlang fit gives the most threshold-stable expected shortfall and layer premiums, reducing the model risk that the threshold choice introduces into capital and reinsurance calculations.
+\noindent Tail index estimates from the Hill estimator or a generalised Pareto fit depend strongly on the threshold, because both ignore second-order tail behaviour. We show that a log-excess has a two-phase phase-type distribution exactly when the tail is a signed mixture of two Pareto tails or a Pareto--log-gamma mixture, and that these tails are second-order regularly varying with negative and zero second-order parameter, respectively. For the Pareto--log-gamma model we derive the Fisher information, which is singular at the Pareto boundary, and closed-form expected shortfall and reinsurance layer premiums. Simulations and Danish fire losses show much reduced threshold sensitivity.
 \end{abstract}
 
-\noindent\textbf{Keywords:} Heavy tails; Hill estimator; phase-type distribution; second-order regular variation; threshold selection; Value-at-Risk
+\noindent\textbf{Keywords:} Phase-type distribution; heavy tails; second-order regular variation; Hill estimator; threshold selection; expected shortfall
 
-\noindent\textbf{MSC 2020:} 62G32; 60E05; 62F12; 62P05
+\noindent\textbf{MSC 2020:} 60E05; 62G32; 62F12; 62P05
+
+\noindent\textbf{Running head:} \runninghead
 
 \section{Introduction}\label{sec:intro}
 
@@ -495,8 +506,7 @@ No potential conflict of interest was reported by the author(s). \todo{Confirm.}
 \section*{Data availability statement}\label{sec:availability}
 The Danish fire insurance losses analysed in Section~\ref{sec:data} are publicly available, for example as the data set \texttt{danish} in the R package \texttt{evir}. All simulation code, raw per-sample estimates, summary tables, the risk-measure and interval code, and the scripts that produce every table and figure in this paper are available at \todo{repository URL or supplementary material}.
 
-\bibliographystyle{apalike}
-\bibliography{refs}
+\IfFileExists{references.tex}{\input{references}}{\todo{Run make\_bib.py to build the reference list.}}
 
 \appendix
 
